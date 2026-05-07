@@ -12,6 +12,10 @@ const siteMain = document.querySelector(".site-main");
 const sectionPath = document.querySelector("[data-section-path]");
 const sectionPathLine = document.querySelector("[data-section-path-line]");
 const sectionSteps = [...document.querySelectorAll("[data-section-step]")];
+const aboutTabSource = document.querySelector(".about-tab-source");
+const aboutTabPanelsWrap = document.querySelector(".about-tab-panels");
+const aboutTabs = [...document.querySelectorAll("[data-about-tab]")];
+const aboutPanels = [...document.querySelectorAll("[data-about-panel]")];
 const galleryGrid = document.querySelector("[data-gallery-grid]");
 const galleryPrev = document.querySelector("[data-gallery-prev]");
 const galleryNext = document.querySelector("[data-gallery-next]");
@@ -72,6 +76,119 @@ const updateSectionPath = () => {
 
 const scheduleSectionPathUpdate = () => {
   window.requestAnimationFrame(updateSectionPath);
+};
+
+const setAboutTab = (tabName, shouldFocus = false) => {
+  if (!aboutTabs.length || !aboutPanels.length) return;
+
+  const nextTab = aboutTabs.find((tab) => tab.dataset.aboutTab === tabName) || aboutTabs[0];
+  const nextTabName = nextTab.dataset.aboutTab;
+
+  aboutTabs.forEach((tab) => {
+    const isActive = tab === nextTab;
+    tab.classList.toggle("is-active", isActive);
+    tab.setAttribute("aria-selected", String(isActive));
+    tab.tabIndex = isActive ? 0 : -1;
+  });
+
+  aboutPanels.forEach((panel) => {
+    const isActive = panel.dataset.aboutPanel === nextTabName;
+    panel.hidden = !isActive;
+    panel.classList.toggle("is-active", isActive);
+  });
+
+  if (shouldFocus) {
+    nextTab.focus();
+  }
+
+  updateAboutPanelFadeState();
+  scheduleSectionPathUpdate();
+};
+
+const highlightAboutParagraphStarts = () => {
+  aboutPanels.forEach((panel) => {
+    panel.querySelectorAll("p").forEach((paragraph) => {
+      if (paragraph.querySelector(".about-paragraph-start")) return;
+
+      const walker = document.createTreeWalker(paragraph, NodeFilter.SHOW_TEXT);
+      let textNode = walker.nextNode();
+
+      while (textNode && !textNode.textContent.trim()) {
+        textNode = walker.nextNode();
+      }
+
+      if (!textNode) return;
+
+      const match = textNode.textContent.match(/^(\s*)(\S+)/);
+      if (!match) return;
+
+      const [, leadingSpace, firstWord] = match;
+      const rest = textNode.textContent.slice(leadingSpace.length + firstWord.length);
+      const fragment = document.createDocumentFragment();
+
+      if (leadingSpace) {
+        fragment.append(document.createTextNode(leadingSpace));
+      }
+
+      const start = document.createElement("span");
+      start.className = "about-paragraph-start";
+      start.textContent = firstWord;
+      fragment.append(start, document.createTextNode(rest));
+      textNode.replaceWith(fragment);
+    });
+  });
+};
+
+const updateAboutPanelFadeState = () => {
+  const activePanel = aboutPanels.find((panel) => !panel.hidden);
+  aboutTabPanelsWrap?.classList.toggle("is-scrolled", Boolean(activePanel && activePanel.scrollTop > 8));
+};
+
+const initializeAboutTabs = () => {
+  if (!aboutTabs.length || !aboutPanels.length) return;
+
+  const bioSourceText = aboutTabSource?.textContent.trim();
+  const bioPanelText = document.querySelector('[data-about-panel="bio"] p');
+  if (bioSourceText && bioPanelText && bioPanelText.textContent.trim() === "Bio content will be added here.") {
+    bioPanelText.textContent = bioSourceText;
+  }
+
+  aboutTabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => setAboutTab(tab.dataset.aboutTab));
+    tab.addEventListener("keydown", (event) => {
+      const keyActions = {
+        ArrowRight: 1,
+        ArrowDown: 1,
+        ArrowLeft: -1,
+        ArrowUp: -1,
+      };
+
+      if (event.key === "Home") {
+        event.preventDefault();
+        setAboutTab(aboutTabs[0].dataset.aboutTab, true);
+        return;
+      }
+
+      if (event.key === "End") {
+        event.preventDefault();
+        setAboutTab(aboutTabs[aboutTabs.length - 1].dataset.aboutTab, true);
+        return;
+      }
+
+      if (!(event.key in keyActions)) return;
+
+      event.preventDefault();
+      const nextIndex = (index + keyActions[event.key] + aboutTabs.length) % aboutTabs.length;
+      setAboutTab(aboutTabs[nextIndex].dataset.aboutTab, true);
+    });
+  });
+
+  aboutPanels.forEach((panel) => {
+    panel.addEventListener("scroll", updateAboutPanelFadeState, { passive: true });
+  });
+
+  highlightAboutParagraphStarts();
+  setAboutTab("bio");
 };
 
 const titleFromPath = (src) => {
@@ -437,6 +554,7 @@ const renderPerformances = () => {
   scheduleSectionPathUpdate();
 };
 
+initializeAboutTabs();
 initializeHeroPlaylist();
 renderGallery();
 renderPerformances();

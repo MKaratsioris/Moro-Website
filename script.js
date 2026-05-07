@@ -5,6 +5,8 @@ const menuToggle = document.querySelector("[data-menu-toggle]");
 const menuPanel = document.querySelector("[data-menu-panel]");
 const menuLinks = [...menuPanel.querySelectorAll("a")];
 const hero = document.querySelector(".hero");
+const heroVideoLayers = [...document.querySelectorAll("[data-hero-video-layer]")];
+const initialHeroVideoSrc = heroVideoLayers[0]?.getAttribute("src") || "";
 const siteMain = document.querySelector(".site-main");
 const sectionPath = document.querySelector("[data-section-path]");
 const sectionPathLine = document.querySelector("[data-section-path-line]");
@@ -23,12 +25,17 @@ const photoClose = document.querySelector("[data-photo-close]");
 const photoPrev = document.querySelector("[data-photo-prev]");
 const photoNext = document.querySelector("[data-photo-next]");
 const photoCount = document.querySelector("[data-photo-count]");
-let mediaManifest = window.MORAKI_MEDIA || { gallery: [], performances: [] };
+let mediaManifest = window.MORAKI_MEDIA || { hero: [], gallery: [], performances: [] };
+let currentHeroVideoIndex = 0;
+let activeHeroVideoLayerIndex = 0;
+let heroVideoTransitioning = false;
 let photoButtons = [];
 let currentPhotoIndex = 0;
 let currentGalleryPage = 0;
 let currentPerformanceIndex = 0;
 const galleryPreviewCount = 5;
+const heroCrossfadeMs = 1400;
+const heroCrossfadeSeconds = heroCrossfadeMs / 1000;
 
 const savedContrast = localStorage.getItem("moraki-contrast");
 if (savedContrast === "dark") {
@@ -83,6 +90,159 @@ const videoTypeFromPath = (src) => {
     ogv: "video/ogg",
   };
   return types[extension] || "";
+};
+
+const getHeroVideos = () => {
+  const manifestVideos = Array.isArray(mediaManifest.hero) ? mediaManifest.hero : [];
+  if (manifestVideos.length) {
+    const initialVideoIndex = manifestVideos.findIndex((video) => video.src === initialHeroVideoSrc);
+    if (initialVideoIndex > 0) {
+      return [
+        manifestVideos[initialVideoIndex],
+        ...manifestVideos.slice(0, initialVideoIndex),
+        ...manifestVideos.slice(initialVideoIndex + 1),
+      ];
+    }
+
+    return manifestVideos;
+  }
+
+  return initialHeroVideoSrc
+    ? [{ src: initialHeroVideoSrc, title: titleFromPath(initialHeroVideoSrc), type: videoTypeFromPath(initialHeroVideoSrc) }]
+    : [];
+};
+
+const setHeroVideo = (index, shouldPlay = true) => {
+  if (!heroVideoLayers.length) return;
+
+  const videos = getHeroVideos();
+  if (!videos.length) return;
+
+  currentHeroVideoIndex = (index + videos.length) % videos.length;
+  activeHeroVideoLayerIndex = 0;
+  heroVideoTransitioning = false;
+
+  const activeVideo = heroVideoLayers[activeHeroVideoLayerIndex];
+  prepareHeroVideoLayer(activeVideo, videos[currentHeroVideoIndex].src);
+  activeVideo.loop = videos.length === 1;
+
+  heroVideoLayers.forEach((video, layerIndex) => {
+    const isActive = layerIndex === activeHeroVideoLayerIndex;
+    video.classList.toggle("is-active", isActive);
+    if (!isActive) video.pause();
+  });
+
+  if (shouldPlay) {
+    playHeroVideoLayer(activeVideo);
+  }
+
+  preloadNextHeroVideo();
+};
+
+const getActiveHeroVideoLayer = () => heroVideoLayers[activeHeroVideoLayerIndex];
+
+const getStandbyHeroVideoLayer = () => heroVideoLayers[(activeHeroVideoLayerIndex + 1) % heroVideoLayers.length];
+
+const playHeroVideoLayer = (video) => {
+  if (!video) return;
+
+  const playPromise = video.play();
+  if (playPromise?.catch) playPromise.catch(() => {});
+};
+
+const prepareHeroVideoLayer = (video, src) => {
+  if (!video || !src) return;
+
+  video.muted = true;
+  video.loop = false;
+  video.playsInline = true;
+  if (video.getAttribute("src") !== src) {
+    video.src = src;
+    video.load();
+  }
+
+  try {
+    video.currentTime = 0;
+  } catch {
+    // Some browsers delay seeking until video metadata is available.
+  }
+};
+
+const preloadNextHeroVideo = () => {
+  const videos = getHeroVideos();
+  if (heroVideoLayers.length < 2 || videos.length < 2) return;
+
+  const standbyVideo = getStandbyHeroVideoLayer();
+  const nextVideo = videos[(currentHeroVideoIndex + 1) % videos.length];
+  if (standbyVideo?.getAttribute("src") !== nextVideo.src) {
+    standbyVideo.src = nextVideo.src;
+    standbyVideo.load();
+  }
+};
+
+const transitionHeroVideo = (nextIndex) => {
+  const videos = getHeroVideos();
+  if (heroVideoTransitioning || !videos.length) return;
+  if (heroVideoLayers.length < 2 || videos.length < 2) {
+    setHeroVideo(nextIndex);
+    return;
+  }
+
+  heroVideoTransitioning = true;
+  const nextHeroVideoIndex = (nextIndex + videos.length) % videos.length;
+  const currentLayer = getActiveHeroVideoLayer();
+  const nextLayerIndex = (activeHeroVideoLayerIndex + 1) % heroVideoLayers.length;
+  const nextLayer = heroVideoLayers[nextLayerIndex];
+
+  currentHeroVideoIndex = nextHeroVideoIndex;
+  prepareHeroVideoLayer(nextLayer, videos[currentHeroVideoIndex].src);
+  playHeroVideoLayer(nextLayer);
+
+  nextLayer.classList.add("is-active");
+  currentLayer.classList.remove("is-active");
+
+  window.setTimeout(() => {
+    currentLayer.pause();
+    activeHeroVideoLayerIndex = nextLayerIndex;
+    heroVideoTransitioning = false;
+    preloadNextHeroVideo();
+  }, heroCrossfadeMs);
+};
+
+const maybeTransitionHeroVideo = (event) => {
+  const activeVideo = getActiveHeroVideoLayer();
+  if (event.currentTarget !== activeVideo || heroVideoTransitioning) return;
+
+  const videos = getHeroVideos();
+  if (videos.length < 2) return;
+
+  if (event.type === "ended") {
+    transitionHeroVideo(currentHeroVideoIndex + 1);
+    return;
+  }
+
+  if (
+    Number.isFinite(activeVideo.duration) &&
+    activeVideo.duration > heroCrossfadeSeconds &&
+    activeVideo.duration - activeVideo.currentTime <= heroCrossfadeSeconds
+  ) {
+    transitionHeroVideo(currentHeroVideoIndex + 1);
+  }
+};
+
+const initializeHeroPlaylist = () => {
+  if (!heroVideoLayers.length) return;
+
+  heroVideoLayers.forEach((video) => {
+    video.muted = true;
+    video.loop = false;
+    video.playsInline = true;
+    video.addEventListener("timeupdate", maybeTransitionHeroVideo);
+    video.addEventListener("ended", maybeTransitionHeroVideo);
+  });
+
+  setHeroVideo(0, false);
+  playHeroVideoLayer(getActiveHeroVideoLayer());
 };
 
 const renderGallery = () => {
@@ -207,6 +367,7 @@ const renderPerformances = () => {
   scheduleSectionPathUpdate();
 };
 
+initializeHeroPlaylist();
 renderGallery();
 renderPerformances();
 
@@ -333,6 +494,7 @@ const bindPhotoButtons = () => {
 };
 
 const normalizeManifest = (manifest) => ({
+  hero: Array.isArray(manifest?.hero) ? manifest.hero : [],
   gallery: Array.isArray(manifest?.gallery) ? manifest.gallery : [],
   performances: Array.isArray(manifest?.performances) ? manifest.performances : [],
 });
@@ -352,7 +514,11 @@ const updateRenderedMedia = (nextManifest) => {
   const nextMediaManifest = normalizeManifest(nextManifest);
   if (JSON.stringify(nextMediaManifest) === JSON.stringify(mediaManifest)) return;
 
+  const heroChanged = JSON.stringify(nextMediaManifest.hero) !== JSON.stringify(mediaManifest.hero);
   mediaManifest = nextMediaManifest;
+  if (heroChanged) {
+    setHeroVideo(0);
+  }
   renderGallery();
   renderPerformances();
   bindPhotoButtons();

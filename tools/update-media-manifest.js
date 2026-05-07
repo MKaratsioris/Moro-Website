@@ -134,7 +134,18 @@ const performances = preferWebVideos(readFolder(path.join("video", "performances
   };
 });
 
-const output = `window.MORAKI_MEDIA = ${JSON.stringify({ gallery, performances }, null, 2)};\n`;
+const hero = preferWebVideos(readFolder(path.join("video", "hero"), videoExtensions)).map((absolutePath) => {
+  const extension = path.extname(absolutePath).toLowerCase();
+  return {
+    src: toWebPath(absolutePath),
+    title: titleFromFile(absolutePath),
+    type: videoTypes[extension] || "",
+  };
+});
+
+const output = `window.MORAKI_MEDIA = ${JSON.stringify({ hero, gallery, performances }, null, 2)};\n`;
 fs.writeFileSync(path.join(root, "media-manifest.js"), output, "utf8");
 
-console.log(`Wrote media-manifest.js with ${gallery.length} gallery item(s) and ${performances.length} performance item(s).`);
+console.log(
+  `Wrote media-manifest.js with ${hero.length} hero video(s), ${gallery.length} gallery item(s), and ${performances.length} performance item(s).`
+);

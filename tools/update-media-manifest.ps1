@@ -78,8 +78,28 @@ function Convert-PerformanceVideos {
     }
 }
 
+function Select-PreferredVideos {
+  param([array] $Files)
+
+  return $Files |
+    Group-Object BaseName |
+    ForEach-Object {
+      $_.Group | Sort-Object { $VideoRank[$_.Extension.ToLowerInvariant()] } | Select-Object -First 1
+    } |
+    Sort-Object @{ Expression = { Convert-ToTitle $_.Name }; Ascending = $true }, @{ Expression = "Name"; Ascending = $true }
+}
+
 function Update-MediaManifest {
   Convert-PerformanceVideos
+
+  $Hero = @(Select-PreferredVideos (Get-MediaFiles -Folder "video\hero" -Extensions $VideoExtensions) | ForEach-Object {
+    $Extension = $_.Extension.ToLowerInvariant()
+    [ordered]@{
+      src = Convert-ToWebPath $_.FullName
+      title = Convert-ToTitle $_.Name
+      type = $VideoTypes[$Extension]
+    }
+  })
 
   $Gallery = @(Get-MediaFiles -Folder "gallery" -Extensions $ImageExtensions | ForEach-Object {
     [ordered]@{
@@ -88,12 +108,7 @@ function Update-MediaManifest {
     }
   })
 
-  $PerformanceFiles = Get-MediaFiles -Folder "video\performances" -Extensions $VideoExtensions |
-    Group-Object BaseName |
-    ForEach-Object {
-      $_.Group | Sort-Object { $VideoRank[$_.Extension.ToLowerInvariant()] } | Select-Object -First 1
-    } |
-    Sort-Object @{ Expression = { Convert-ToTitle $_.Name }; Ascending = $true }, @{ Expression = "Name"; Ascending = $true }
+  $PerformanceFiles = Select-PreferredVideos (Get-MediaFiles -Folder "video\performances" -Extensions $VideoExtensions)
 
   $Performances = @($PerformanceFiles | ForEach-Object {
     $Extension = $_.Extension.ToLowerInvariant()
@@ -105,6 +120,7 @@ function Update-MediaManifest {
   })
 
   $Manifest = [ordered]@{
+    hero = $Hero
     gallery = $Gallery
     performances = $Performances
   }
@@ -113,13 +129,13 @@ function Update-MediaManifest {
   $Output = "window.MORAKI_MEDIA = $Json;`n"
   Set-Content -LiteralPath (Join-Path $Root "media-manifest.js") -Value $Output -Encoding UTF8
 
-  Write-Host "Wrote media-manifest.js with $($Gallery.Count) gallery item(s) and $($Performances.Count) performance item(s)."
+  Write-Host "Wrote media-manifest.js with $($Hero.Count) hero video(s), $($Gallery.Count) gallery item(s), and $($Performances.Count) performance item(s)."
 }
 
 function Start-MediaManifestWatcher {
   Update-MediaManifest
 
-  $Folders = @("gallery", "video\performances")
+  $Folders = @("gallery", "video\hero", "video\performances")
   $Watchers = @()
   $SubscriptionIds = @()
   $EventNumber = 0
@@ -147,11 +163,11 @@ function Start-MediaManifestWatcher {
   }
 
   if ($Watchers.Count -eq 0) {
-    Write-Warning "No gallery or performance folders were found to watch."
+    Write-Warning "No gallery, hero video, or performance folders were found to watch."
     return
   }
 
-  Write-Host "Watching gallery and video/performances. Press Ctrl+C to stop."
+  Write-Host "Watching gallery, video/hero, and video/performances. Press Ctrl+C to stop."
 
   try {
     while ($true) {

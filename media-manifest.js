@@ -1,4 +1,16 @@
 ﻿window.MORAKI_MEDIA = {
+    "hero":  [
+                 {
+                     "src":  "video/hero/Clip158.mp4",
+                     "title":  "Clip 158",
+                     "type":  "video/mp4"
+                 },
+                 {
+                     "src":  "video/hero/hero-background.mp4",
+                     "title":  "hero background",
+                     "type":  "video/mp4"
+                 }
+             ],
     "gallery":  [
                     {
                         "src":  "gallery/am01.jpg",
@@ -164,11 +176,6 @@
                          {
                              "src":  "video/performances/Clip158.mp4",
                              "title":  "Clip 158",
-                             "type":  "video/mp4"
-                         },
-                         {
-                             "src":  "video/performances/Clip158 - Copy.mp4",
-                             "title":  "Clip 158 Copy",
                              "type":  "video/mp4"
                          }
                      ]

@@ -122,6 +122,71 @@ html[data-contrast="dark"] .site-video-backdrop video {
   filter: grayscale(1) contrast(1.16) brightness(0.72);
 }
 
+.hero-audio-toggle {
+  position: fixed;
+  right: clamp(18px, 3vw, 42px);
+  bottom: clamp(18px, 3vw, 42px);
+  z-index: 12;
+  display: grid;
+  width: clamp(48px, 4.6vw, 64px);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--accent);
+  cursor: pointer;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 280ms ease, transform 280ms ease, background 180ms ease, color 180ms ease;
+}
+
+html[data-contrast="dark"] .hero-audio-toggle {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.hero-audio-toggle:hover,
+.hero-audio-toggle:focus-visible {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.hero-audio-toggle:disabled {
+  cursor: default;
+  opacity: 0.42;
+}
+
+.hero-audio-toggle__icon {
+  display: none;
+  width: 58%;
+  height: 58%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero-audio-toggle__icon--muted {
+  display: block;
+}
+
+.hero-audio-toggle.is-unmuted .hero-audio-toggle__icon--muted {
+  display: none;
+}
+
+.hero-audio-toggle.is-unmuted .hero-audio-toggle__icon--sound {
+  display: block;
+}
+
+body.hero-audio-hidden .hero-audio-toggle,
+body.menu-open .hero-audio-toggle {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+}
+
 .site-nav {
   position: fixed;
   top: 0;
@@ -1101,6 +1166,28 @@ body.past-hero .site-nav .nav-fade-item {
   border-top: 3px solid var(--ink);
 }
 
+.schedule-list.is-scrollable {
+  max-height: var(--schedule-list-max, 42rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 0.8rem;
+  scrollbar-color: var(--accent) transparent;
+  scrollbar-width: thin;
+}
+
+.schedule-list.is-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.schedule-list.is-scrollable::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.schedule-list.is-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .schedule-list article {
   display: grid;
   grid-template-columns: 86px 1fr auto;
@@ -1442,8 +1529,13 @@ body.past-hero .site-nav .nav-fade-item {
 }
 
 .site-footer #at {
-  color: var(--accent);
+  color: #ffffff;
   font-size: 1rem;
+}
+
+.site-footer #at .footer-name {
+  color: var(--accent);
+  font-size: inherit;
 }
 
 .footer-socials {

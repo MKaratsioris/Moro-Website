@@ -1,14 +1,22 @@
 ﻿window.MORAKI_MEDIA = {
     "hero":  [
                  {
-                     "src":  "video/hero/Clip158.mp4",
-                     "title":  "Clip 158",
-                     "type":  "video/mp4"
+                     "src":  "video/hero/Clip155.mp4",
+                     "title":  "Clip 155",
+                     "type":  "video/mp4",
+                     "hasAudio":  true
                  },
                  {
-                     "src":  "video/hero/hero-background.mp4",
-                     "title":  "hero background",
-                     "type":  "video/mp4"
+                     "src":  "video/hero/Clip156.mp4",
+                     "title":  "Clip 156",
+                     "type":  "video/mp4",
+                     "hasAudio":  true
+                 },
+                 {
+                     "src":  "video/hero/Clip157.mp4",
+                     "title":  "Clip 157",
+                     "type":  "video/mp4",
+                     "hasAudio":  true
                  }
              ],
     "gallery":  [

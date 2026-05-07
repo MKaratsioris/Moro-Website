@@ -21,7 +21,7 @@
     <a class="skip-link" href="#about">Skip to content</a>
 
     <div class="site-video-backdrop" aria-hidden="true">
-      <video class="hero-video is-active" src="video/hero/hero-background.mp4" data-hero-video-layer autoplay muted playsinline preload="auto"></video>
+      <video class="hero-video is-active" data-hero-video-layer muted playsinline preload="auto"></video>
       <video class="hero-video" data-hero-video-layer muted playsinline preload="auto"></video>
     </div>
 
@@ -66,6 +66,18 @@
         <div class="hero-stage" aria-hidden="true">
           <div class="hero-video__wash"></div>
         </div>
+
+        <button class="hero-audio-toggle" type="button" data-hero-audio-toggle aria-label="Unmute hero video" aria-pressed="false">
+          <svg class="hero-audio-toggle__icon hero-audio-toggle__icon--muted" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M10 25h10l14-12v38L20 39H10z"></path>
+            <path d="M47 24l9 9m0-9l-9 9"></path>
+          </svg>
+          <svg class="hero-audio-toggle__icon hero-audio-toggle__icon--sound" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="M10 25h10l14-12v38L20 39H10z"></path>
+            <path d="M43 23c3 3 5 6 5 10s-2 8-5 10"></path>
+            <path d="M50 16c5 5 8 11 8 17s-3 13-8 18"></path>
+          </svg>
+        </button>
 
         <!-- <div class="hero-copy hero-copy--left">
           <h1>Alejandra<br />Mantiñan</h1>
@@ -218,7 +230,7 @@
       <!-- ---------------------------------------- -->
 
     <footer class="site-footer">
-      <p id="at">© 2026 Alejandra Mantiñan</p>
+      <p id="at">© 2026 <span class="footer-name">Alejandra Mantiñan</span>. All rights reserved</p>
       <div class="socials footer-socials" aria-label="Footer links">
         <a href="https://www.facebook.com/alejandra.mantinan" target="_blank" rel="noreferrer" aria-label="Facebook">
           <svg class="social-icon social-icon--facebook" viewBox="0 0 64 64" aria-hidden="true" focusable="false">

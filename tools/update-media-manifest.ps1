@@ -89,6 +89,18 @@ function Select-PreferredVideos {
     Sort-Object @{ Expression = { Convert-ToTitle $_.Name }; Ascending = $true }, @{ Expression = "Name"; Ascending = $true }
 }
 
+function Test-VideoHasAudio {
+  param([string] $Path)
+
+  $Ffprobe = Get-Command ffprobe -ErrorAction SilentlyContinue
+  if (-not $Ffprobe) {
+    return $true
+  }
+
+  $AudioStreams = & $Ffprobe.Source -v error -select_streams a -show_entries stream=index -of csv=p=0 $Path 2>$null
+  return -not [string]::IsNullOrWhiteSpace(($AudioStreams -join ""))
+}
+
 function Update-MediaManifest {
   Convert-PerformanceVideos
 
@@ -98,6 +110,7 @@ function Update-MediaManifest {
       src = Convert-ToWebPath $_.FullName
       title = Convert-ToTitle $_.Name
       type = $VideoTypes[$Extension]
+      hasAudio = Test-VideoHasAudio $_.FullName
     }
   })
 

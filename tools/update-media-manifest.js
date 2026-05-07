@@ -125,6 +125,17 @@ const preferWebVideos = (files) => {
   });
 };
 
+const hasAudioStream = (absolutePath) => {
+  const result = spawnSync(
+    "ffprobe",
+    ["-v", "error", "-select_streams", "a", "-show_entries", "stream=index", "-of", "csv=p=0", absolutePath],
+    { encoding: "utf8" }
+  );
+
+  if (result.error) return true;
+  return result.status === 0 && result.stdout.trim().length > 0;
+};
+
 const performances = preferWebVideos(readFolder(path.join("video", "performances"), videoExtensions)).map((absolutePath) => {
   const extension = path.extname(absolutePath).toLowerCase();
   return {
@@ -140,6 +151,7 @@ const hero = preferWebVideos(readFolder(path.join("video", "hero"), videoExtensi
     src: toWebPath(absolutePath),
     title: titleFromFile(absolutePath),
     type: videoTypes[extension] || "",
+    hasAudio: hasAudioStream(absolutePath),
   };
 });
 

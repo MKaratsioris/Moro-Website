@@ -5,6 +5,10 @@ const menuToggle = document.querySelector("[data-menu-toggle]");
 const menuPanel = document.querySelector("[data-menu-panel]");
 const menuLinks = [...menuPanel.querySelectorAll("a")];
 const hero = document.querySelector(".hero");
+const siteMain = document.querySelector(".site-main");
+const sectionPath = document.querySelector("[data-section-path]");
+const sectionPathLine = document.querySelector("[data-section-path-line]");
+const sectionSteps = [...document.querySelectorAll("[data-section-step]")];
 const galleryGrid = document.querySelector("[data-gallery-grid]");
 const galleryPrev = document.querySelector("[data-gallery-prev]");
 const galleryNext = document.querySelector("[data-gallery-next]");
@@ -30,6 +34,34 @@ const savedContrast = localStorage.getItem("moraki-contrast");
 if (savedContrast === "dark") {
   root.dataset.contrast = "dark";
 }
+
+const updateSectionPath = () => {
+  if (!siteMain || !sectionPath || !sectionPathLine || sectionSteps.length < 2) return;
+
+  const mainRect = siteMain.getBoundingClientRect();
+  const markerPoints = sectionSteps.map((step) => {
+    const rect = step.getBoundingClientRect();
+    const x = rect.left + rect.width / 2 - mainRect.left;
+    const y = rect.top + rect.height / 2 - mainRect.top;
+    return { x, y };
+  });
+  const routedPoints = [markerPoints[0]];
+
+  markerPoints.slice(1).forEach((nextPoint, index) => {
+    const currentPoint = markerPoints[index];
+    routedPoints.push(
+      { x: currentPoint.x, y: nextPoint.y },
+      nextPoint
+    );
+  });
+
+  sectionPath.setAttribute("viewBox", `0 0 ${Math.round(siteMain.offsetWidth)} ${Math.round(siteMain.offsetHeight)}`);
+  sectionPathLine.setAttribute("points", routedPoints.map((point) => `${Math.round(point.x)},${Math.round(point.y)}`).join(" "));
+};
+
+const scheduleSectionPathUpdate = () => {
+  window.requestAnimationFrame(updateSectionPath);
+};
 
 const titleFromPath = (src) => {
   const fileName = src.split("/").pop() || "Media";
@@ -81,6 +113,7 @@ const renderGallery = () => {
   });
 
   renderGalleryPagination(totalPages);
+  scheduleSectionPathUpdate();
 };
 
 function renderGalleryPagination(totalPages) {
@@ -171,6 +204,7 @@ const renderPerformances = () => {
   performanceGrid.append(card);
 
   renderPerformanceControls();
+  scheduleSectionPathUpdate();
 };
 
 renderGallery();
@@ -230,8 +264,13 @@ const updateNavSocials = () => {
 };
 
 updateNavSocials();
+updateSectionPath();
 window.addEventListener("scroll", updateNavSocials, { passive: true });
-window.addEventListener("resize", updateNavSocials);
+window.addEventListener("resize", () => {
+  updateNavSocials();
+  scheduleSectionPathUpdate();
+});
+window.addEventListener("load", updateSectionPath);
 
 window.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
@@ -317,6 +356,7 @@ const updateRenderedMedia = (nextManifest) => {
   renderGallery();
   renderPerformances();
   bindPhotoButtons();
+  scheduleSectionPathUpdate();
 };
 
 const refreshMediaManifest = async () => {

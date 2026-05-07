@@ -143,10 +143,30 @@ html[data-contrast="dark"] .site-nav::before {
   background: rgba(0, 0, 0, 0.24);
 }
 
-main,
+.site-main,
 .site-footer {
   position: relative;
   z-index: 1;
+}
+
+.section-path {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.section-path polyline {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.78;
+  vector-effect: non-scaling-stroke;
 }
 
 .mode-toggle,
@@ -953,11 +973,44 @@ body.past-hero .site-nav .nav-fade-item {
 }
 
 .content-section {
+  position: relative;
   min-height: 100svh;
   padding: 9rem 6vw;
   border-top: 1px solid var(--soft);
   background: var(--bg);
   color: var(--ink);
+}
+
+.section-index {
+  position: absolute;
+  top: clamp(4rem, 9vh, 6.5rem);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.section-index--left {
+  left: clamp(1.2rem, 2.25vw, 2.5rem);
+}
+
+.section-index--right {
+  right: clamp(1.2rem, 2.25vw, 2.5rem);
+}
+
+.section-step {
+  display: grid;
+  width: clamp(46px, 4.2vw, 58px);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 0 0 8px var(--bg);
 }
 
 .content-section h2 {
@@ -978,12 +1031,17 @@ body.past-hero .site-nav .nav-fade-item {
 }
 
 .section-label {
-  display: block;
-  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0;
+  padding: 0.35rem 0.5rem;
+  background: var(--bg);
+  box-shadow: 0 0 0 6px var(--bg);
   color: var(--accent);
   text-transform: uppercase;
   font-size: 0.9rem;
   font-weight: 900;
+  line-height: 1;
 }
 
 .split-section {
@@ -1822,6 +1880,35 @@ body.past-hero .site-nav .nav-fade-item {
 }
 
 @media (max-width: 560px) {
+  .section-path polyline {
+    stroke-width: 2.4;
+  }
+
+  .section-index {
+    top: 5.4rem;
+    gap: 0.55rem;
+  }
+
+  .section-index--left {
+    left: 0;
+  }
+
+  .section-index--right {
+    right: 0;
+  }
+
+  .section-step {
+    width: 38px;
+    border-width: 2px;
+    box-shadow: 0 0 0 5px var(--bg);
+    font-size: 0.92rem;
+  }
+
+  .section-label {
+    padding: 0.3rem 0.42rem;
+    font-size: 0.76rem;
+  }
+
   .site-nav {
     grid-template-columns: auto minmax(0, 1fr) auto;
     column-gap: 0.4rem;

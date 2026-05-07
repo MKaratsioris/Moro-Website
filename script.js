@@ -6,7 +6,13 @@ const menuPanel = document.querySelector("[data-menu-panel]");
 const menuLinks = [...menuPanel.querySelectorAll("a")];
 const hero = document.querySelector(".hero");
 const galleryGrid = document.querySelector("[data-gallery-grid]");
+const galleryPrev = document.querySelector("[data-gallery-prev]");
+const galleryNext = document.querySelector("[data-gallery-next]");
+const galleryStatus = document.querySelector("[data-gallery-status]");
 const performanceGrid = document.querySelector("[data-performance-grid]");
+const performancePrev = document.querySelector("[data-performance-prev]");
+const performanceNext = document.querySelector("[data-performance-next]");
+const performancePagination = document.querySelector("[data-performance-pagination]");
 const photoLightbox = document.querySelector("[data-photo-lightbox]");
 const photoPreview = document.querySelector("[data-photo-preview]");
 const photoClose = document.querySelector("[data-photo-close]");
@@ -16,6 +22,9 @@ const photoCount = document.querySelector("[data-photo-count]");
 let mediaManifest = window.MORAKI_MEDIA || { gallery: [], performances: [] };
 let photoButtons = [];
 let currentPhotoIndex = 0;
+let currentGalleryPage = 0;
+let currentPerformanceIndex = 0;
+const galleryPreviewCount = 5;
 
 const savedContrast = localStorage.getItem("moraki-contrast");
 if (savedContrast === "dark") {
@@ -48,12 +57,18 @@ const renderGallery = () => {
   if (!galleryGrid) return;
 
   galleryGrid.innerHTML = "";
-  mediaManifest.gallery.forEach((item, index) => {
+  const totalPages = Math.max(1, Math.ceil(mediaManifest.gallery.length / galleryPreviewCount));
+  currentGalleryPage = Math.min(currentGalleryPage, totalPages - 1);
+  const pageStart = currentGalleryPage * galleryPreviewCount;
+  const pageItems = mediaManifest.gallery.slice(pageStart, pageStart + galleryPreviewCount);
+
+  pageItems.forEach((item, index) => {
+    const manifestIndex = pageStart + index;
     const button = document.createElement("button");
     button.className = index === 0 ? "photo-card photo-card--wide" : "photo-card";
     button.type = "button";
     button.dataset.photo = item.src;
-    button.dataset.photoIndex = String(index);
+    button.dataset.photoIndex = String(manifestIndex);
     button.setAttribute("aria-label", `Open ${item.alt || titleFromPath(item.src)}`);
 
     const image = document.createElement("img");
@@ -64,32 +79,98 @@ const renderGallery = () => {
     button.append(image);
     galleryGrid.append(button);
   });
+
+  renderGalleryPagination(totalPages);
+};
+
+function renderGalleryPagination(totalPages) {
+  if (galleryPrev) {
+    galleryPrev.disabled = currentGalleryPage === 0 || totalPages <= 1;
+  }
+
+  if (galleryNext) {
+    galleryNext.disabled = currentGalleryPage >= totalPages - 1 || totalPages <= 1;
+  }
+
+  if (galleryStatus) {
+    galleryStatus.textContent = mediaManifest.gallery.length ? `${currentGalleryPage + 1} / ${totalPages}` : "";
+  }
+}
+
+const setGalleryPage = (page) => {
+  const totalPages = Math.max(1, Math.ceil(mediaManifest.gallery.length / galleryPreviewCount));
+  currentGalleryPage = Math.min(Math.max(page, 0), totalPages - 1);
+  renderGallery();
+  bindPhotoButtons();
+};
+
+function renderPerformancePagination() {
+  if (!performancePagination) return;
+
+  performancePagination.textContent = mediaManifest.performances.length
+    ? `${currentPerformanceIndex + 1} / ${mediaManifest.performances.length}`
+    : "";
+}
+
+function renderPerformanceControls() {
+  const hasMultipleVideos = mediaManifest.performances.length > 1;
+
+  if (performancePrev) {
+    performancePrev.disabled = !hasMultipleVideos || currentPerformanceIndex === 0;
+  }
+
+  if (performanceNext) {
+    performanceNext.disabled = !hasMultipleVideos || currentPerformanceIndex >= mediaManifest.performances.length - 1;
+  }
+
+  renderPerformancePagination();
+}
+
+const setPerformanceIndex = (index) => {
+  if (!mediaManifest.performances.length) return;
+
+  currentPerformanceIndex = Math.min(Math.max(index, 0), mediaManifest.performances.length - 1);
+  renderPerformances();
+};
+
+const stopRenderedPerformanceVideos = () => {
+  performanceGrid?.querySelectorAll("video").forEach((video) => {
+    video.pause();
+  });
 };
 
 const renderPerformances = () => {
   if (!performanceGrid) return;
 
+  stopRenderedPerformanceVideos();
   performanceGrid.innerHTML = "";
-  mediaManifest.performances.forEach((item) => {
-    const card = document.createElement("article");
-    card.className = "video-card performance-card";
+  if (!mediaManifest.performances.length) {
+    renderPerformanceControls();
+    return;
+  }
 
-    const video = document.createElement("video");
-    video.controls = true;
-    video.preload = "metadata";
-    video.playsInline = true;
+  currentPerformanceIndex = Math.min(currentPerformanceIndex, mediaManifest.performances.length - 1);
+  const item = mediaManifest.performances[currentPerformanceIndex];
+  const card = document.createElement("article");
+  card.className = "video-card performance-card";
 
-    const source = document.createElement("source");
-    source.src = item.src;
-    source.type = item.type || videoTypeFromPath(item.src);
-    video.append(source);
+  const video = document.createElement("video");
+  video.controls = true;
+  video.preload = "metadata";
+  video.playsInline = true;
 
-    const label = document.createElement("span");
-    label.textContent = item.title || titleFromPath(item.src);
+  const source = document.createElement("source");
+  source.src = item.src;
+  source.type = item.type || videoTypeFromPath(item.src);
+  video.append(source);
 
-    card.append(video, label);
-    performanceGrid.append(card);
-  });
+  const label = document.createElement("span");
+  label.textContent = item.title || titleFromPath(item.src);
+
+  card.append(video, label);
+  performanceGrid.append(card);
+
+  renderPerformanceControls();
 };
 
 renderGallery();
@@ -138,6 +219,11 @@ menuLinks.forEach((link) => {
   link.addEventListener("click", () => setMenu(false));
 });
 
+galleryPrev?.addEventListener("click", () => setGalleryPage(currentGalleryPage - 1));
+galleryNext?.addEventListener("click", () => setGalleryPage(currentGalleryPage + 1));
+performancePrev?.addEventListener("click", () => setPerformanceIndex(currentPerformanceIndex - 1));
+performanceNext?.addEventListener("click", () => setPerformanceIndex(currentPerformanceIndex + 1));
+
 const updateNavSocials = () => {
   const heroExit = hero.offsetTop + hero.offsetHeight - 90;
   body.classList.toggle("past-hero", window.scrollY >= heroExit);
@@ -167,14 +253,13 @@ window.addEventListener("keydown", (event) => {
 });
 
 const showPhoto = (index) => {
-  if (!photoButtons.length) return;
+  if (!mediaManifest.gallery.length) return;
 
-  currentPhotoIndex = (index + photoButtons.length) % photoButtons.length;
-  const button = photoButtons[currentPhotoIndex];
-  const image = button.querySelector("img");
-  photoPreview.src = button.dataset.photo;
-  photoPreview.alt = image.alt;
-  photoCount.textContent = `${currentPhotoIndex + 1} / ${photoButtons.length}`;
+  currentPhotoIndex = (index + mediaManifest.gallery.length) % mediaManifest.gallery.length;
+  const item = mediaManifest.gallery[currentPhotoIndex];
+  photoPreview.src = item.src;
+  photoPreview.alt = item.alt || `${titleFromPath(item.src)} of Alejandra Mantinan`;
+  photoCount.textContent = `${currentPhotoIndex + 1} / ${mediaManifest.gallery.length}`;
 };
 
 const showRelativePhoto = (step) => {

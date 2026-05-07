@@ -47,7 +47,7 @@ function Get-MediaFiles {
 
   return Get-ChildItem -LiteralPath $AbsoluteFolder -File |
     Where-Object { $Extensions -contains $_.Extension.ToLowerInvariant() } |
-    Sort-Object @{ Expression = "Name"; Ascending = $true }
+    Sort-Object @{ Expression = { Convert-ToTitle $_.Name }; Ascending = $true }, @{ Expression = "Name"; Ascending = $true }
 }
 
 function Convert-PerformanceVideos {
@@ -93,7 +93,7 @@ function Update-MediaManifest {
     ForEach-Object {
       $_.Group | Sort-Object { $VideoRank[$_.Extension.ToLowerInvariant()] } | Select-Object -First 1
     } |
-    Sort-Object Name
+    Sort-Object @{ Expression = { Convert-ToTitle $_.Name }; Ascending = $true }, @{ Expression = "Name"; Ascending = $true }
 
   $Performances = @($PerformanceFiles | ForEach-Object {
     $Extension = $_.Extension.ToLowerInvariant()

@@ -165,6 +165,11 @@
                              "src":  "video/performances/Clip158.mp4",
                              "title":  "Clip 158",
                              "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Clip158 - Copy.mp4",
+                             "title":  "Clip 158 Copy",
+                             "type":  "video/mp4"
                          }
                      ]
 };

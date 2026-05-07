@@ -40,7 +40,13 @@ const readFolder = (folder, extensions) => {
     .readdirSync(absoluteFolder, { withFileTypes: true })
     .filter((entry) => entry.isFile())
     .filter((entry) => extensions.has(path.extname(entry.name).toLowerCase()))
-    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }))
+    .sort((a, b) => {
+      const titleCompare = titleFromFile(a.name).localeCompare(titleFromFile(b.name), undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+      return titleCompare || a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" });
+    })
     .map((entry) => path.join(absoluteFolder, entry.name));
 };
 
@@ -110,9 +116,13 @@ const preferWebVideos = (files) => {
       byName.set(key, file);
     }
   });
-  return [...byName.values()].sort((a, b) =>
-    path.basename(a).localeCompare(path.basename(b), undefined, { numeric: true, sensitivity: "base" })
-  );
+  return [...byName.values()].sort((a, b) => {
+    const titleCompare = titleFromFile(a).localeCompare(titleFromFile(b), undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
+    return titleCompare || path.basename(a).localeCompare(path.basename(b), undefined, { numeric: true, sensitivity: "base" });
+  });
 };
 
 const performances = preferWebVideos(readFolder(path.join("video", "performances"), videoExtensions)).map((absolutePath) => {

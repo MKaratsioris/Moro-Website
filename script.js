@@ -4,6 +4,9 @@ const modeToggle = document.querySelector("[data-mode-toggle]");
 const menuToggle = document.querySelector("[data-menu-toggle]");
 const menuPanel = document.querySelector("[data-menu-panel]");
 const menuLinks = [...menuPanel.querySelectorAll("a")];
+const languageMenu = document.querySelector("[data-language-menu]");
+const languageToggle = document.querySelector("[data-language-toggle]");
+const languageOptions = [...document.querySelectorAll("[data-language-option]")];
 const hero = document.querySelector(".hero");
 const heroVideoLayers = [...document.querySelectorAll("[data-hero-video-layer]")];
 const heroAudioToggle = document.querySelector("[data-hero-audio-toggle]");
@@ -49,6 +52,32 @@ const savedContrast = localStorage.getItem("moraki-contrast");
 if (savedContrast === "dark") {
   root.dataset.contrast = "dark";
 }
+
+const pageLanguage = root.lang === "es" ? "es" : "en";
+const labels = {
+  en: {
+    closeLanguageMenu: "Close language menu",
+    closeMenu: "Close menu",
+    heroVideoHasNoAudio: "Hero video has no audio",
+    muteHeroVideo: "Mute hero video",
+    openLanguageMenu: "Open language menu",
+    openMedia: "Open",
+    openMenu: "Open menu",
+    photoAltJoin: "of Alejandra Mantinan",
+    unmuteHeroVideo: "Unmute hero video",
+  },
+  es: {
+    closeLanguageMenu: "Cerrar menú de idiomas",
+    closeMenu: "Cerrar menú",
+    heroVideoHasNoAudio: "El video principal no tiene audio",
+    muteHeroVideo: "Silenciar video principal",
+    openLanguageMenu: "Abrir menú de idiomas",
+    openMedia: "Abrir",
+    openMenu: "Abrir menú",
+    photoAltJoin: "de Alejandra Mantiñan",
+    unmuteHeroVideo: "Activar audio del video principal",
+  },
+}[pageLanguage];
 
 const updateSectionPath = () => {
   if (!siteMain || !sectionPath || !sectionPathLine || sectionSteps.length < 2) return;
@@ -253,7 +282,7 @@ const updateHeroAudioButton = () => {
   heroAudioToggle.setAttribute("aria-pressed", String(!heroAudioMuted));
   heroAudioToggle.setAttribute(
     "aria-label",
-    hasAudioOption ? (heroAudioMuted ? "Unmute hero video" : "Mute hero video") : "Hero video has no audio"
+    hasAudioOption ? (heroAudioMuted ? labels.unmuteHeroVideo : labels.muteHeroVideo) : labels.heroVideoHasNoAudio
   );
 };
 
@@ -448,11 +477,11 @@ const renderGallery = () => {
     button.type = "button";
     button.dataset.photo = item.src;
     button.dataset.photoIndex = String(manifestIndex);
-    button.setAttribute("aria-label", `Open ${item.alt || titleFromPath(item.src)}`);
+    button.setAttribute("aria-label", `${labels.openMedia} ${item.alt || titleFromPath(item.src)}`);
 
     const image = document.createElement("img");
     image.src = item.src;
-    image.alt = item.alt || `${titleFromPath(item.src)} of Alejandra Mantinan`;
+    image.alt = item.alt || `${titleFromPath(item.src)} ${labels.photoAltJoin}`;
     image.loading = index === 0 ? "eager" : "lazy";
 
     button.append(image);
@@ -559,9 +588,31 @@ initializeHeroPlaylist();
 renderGallery();
 renderPerformances();
 
+const updateLanguageOptionLinks = () => {
+  if (!languageOptions.length) return;
+
+  const hash = window.location.hash || "";
+  languageOptions.forEach((option) => {
+    const baseHref = option.dataset.languageHref || option.getAttribute("href").split("#")[0];
+    option.setAttribute("href", `${baseHref}${hash}`);
+  });
+};
+
+const setLanguageMenu = (open) => {
+  if (!languageMenu || !languageToggle) return;
+
+  languageMenu.classList.toggle("is-open", open);
+  languageToggle.setAttribute("aria-expanded", String(open));
+  languageToggle.setAttribute("aria-label", open ? labels.closeLanguageMenu : labels.openLanguageMenu);
+};
+
 const setMenu = (open) => {
   const isOpen = menuPanel.classList.contains("is-open");
   if (open === isOpen && !menuPanel.classList.contains("is-closing")) return;
+
+  if (open) {
+    setLanguageMenu(false);
+  }
 
   if (open) {
     body.classList.add("menu-open");
@@ -581,7 +632,7 @@ const setMenu = (open) => {
   }
 
   menuToggle.setAttribute("aria-expanded", String(open));
-  menuToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  menuToggle.setAttribute("aria-label", open ? labels.closeMenu : labels.openMenu);
 };
 
 modeToggle.addEventListener("click", () => {
@@ -592,6 +643,23 @@ modeToggle.addEventListener("click", () => {
     root.removeAttribute("data-contrast");
   }
   localStorage.setItem("moraki-contrast", nextMode);
+});
+
+languageToggle?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  setMenu(false);
+  setLanguageMenu(!languageMenu?.classList.contains("is-open"));
+});
+
+languageOptions.forEach((option) => {
+  option.addEventListener("click", () => setLanguageMenu(false));
+});
+
+document.addEventListener("click", (event) => {
+  if (!languageMenu?.classList.contains("is-open")) return;
+  if (languageMenu.contains(event.target)) return;
+
+  setLanguageMenu(false);
 });
 
 menuToggle.addEventListener("click", () => {
@@ -648,7 +716,10 @@ const updateNavSocials = () => {
 updateScheduleListState();
 updateNavSocials();
 updateSectionPath();
+updateLanguageOptionLinks();
+setLanguageMenu(false);
 window.addEventListener("scroll", updateNavSocials, { passive: true });
+window.addEventListener("hashchange", updateLanguageOptionLinks);
 window.addEventListener("resize", () => {
   updateScheduleListState();
   updateNavSocials();
@@ -662,6 +733,7 @@ window.addEventListener("load", () => {
 window.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     setMenu(false);
+    setLanguageMenu(false);
     closePhoto();
   }
 

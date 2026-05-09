@@ -158,11 +158,8 @@
           <span class="section-label">Schedule</span>
         </div>
         <div class="schedule-heading">
-          <h2>Upcoming classes and performances</h2>
-          <div class="schedule-year-wrap">
-            <h2 class="schedule-year">2026</h2>
-            <a class="schedule-enquire-button" href="#contact-me">Enquire</a>
-          </div>
+          <h2>Upcoming classes and performances <span class="schedule-year">2026</span></h2>
+          <a class="schedule-enquire-button" href="#contact-me">Enquire</a>
         </div>
         <div class="schedule-list">
           <article>
@@ -238,15 +235,17 @@
           <span class="section-step" data-section-step>3</span>
         </div>
         <div class="gallery-carousel" aria-label="Gallery carousel">
-          <button class="gallery-carousel__nav gallery-carousel__nav--prev" type="button" data-gallery-prev aria-label="Previous photos">
-            <span aria-hidden="true">&lt;</span>
-          </button>
           <div class="media-grid media-grid--photos" data-gallery-grid></div>
-          <button class="gallery-carousel__nav gallery-carousel__nav--next" type="button" data-gallery-next aria-label="Next photos">
-            <span aria-hidden="true">&gt;</span>
-          </button>
+          <div class="gallery-carousel__controls">
+            <button class="gallery-carousel__nav gallery-carousel__nav--prev" type="button" data-gallery-prev aria-label="Previous photos">
+              <span aria-hidden="true">&lt;</span>
+            </button>
+            <div class="gallery-carousel__status" data-gallery-status aria-live="polite"></div>
+            <button class="gallery-carousel__nav gallery-carousel__nav--next" type="button" data-gallery-next aria-label="Next photos">
+              <span aria-hidden="true">&gt;</span>
+            </button>
+          </div>
         </div>
-        <div class="gallery-carousel__status" data-gallery-status aria-live="polite"></div>
       </section>
       
       <!-- ---------------------------------------------- -->
@@ -259,15 +258,17 @@
           <span class="section-label">Performances</span>
         </div>
         <div class="performance-carousel" aria-label="Performance carousel">
-          <button class="performance-carousel__nav performance-carousel__nav--prev" type="button" data-performance-prev aria-label="Previous video">
-            <span aria-hidden="true">&lt;</span>
-          </button>
           <div class="media-grid media-grid--videos" data-performance-grid></div>
-          <button class="performance-carousel__nav performance-carousel__nav--next" type="button" data-performance-next aria-label="Next video">
-            <span aria-hidden="true">&gt;</span>
-          </button>
+          <div class="performance-carousel__controls">
+            <button class="performance-carousel__nav performance-carousel__nav--prev" type="button" data-performance-prev aria-label="Previous video">
+              <span aria-hidden="true">&lt;</span>
+            </button>
+            <div class="performance-pagination" data-performance-pagination aria-label="Performance count" aria-live="polite"></div>
+            <button class="performance-carousel__nav performance-carousel__nav--next" type="button" data-performance-next aria-label="Next video">
+              <span aria-hidden="true">&gt;</span>
+            </button>
+          </div>
         </div>
-        <div class="performance-pagination" data-performance-pagination aria-label="Performance count" aria-live="polite"></div>
       </section>
       
       <!-- ----------------------------------------- -->

@@ -9,8 +9,10 @@
   --menu-ink: #000000;
   --accent: #c9172d;
   --accent-hover: #f06f80;
-  --burger-line: var(--accent);
-  --burger-wave: var(--accent-hover);
+  --toggle-track: var(--ink);
+  --toggle-track-hover: var(--ink);
+  --burger-line: var(--ink);
+  --burger-wave: var(--ink);
   --figure-fill: #ffffff;
   --figure-stroke: #000000;
   --figure-dress: #cf1024;
@@ -34,6 +36,8 @@ html[data-contrast="dark"] {
   --menu-ink: #000000;
   --accent: #ff334b;
   --accent-hover: #ff8794;
+  --toggle-track: var(--accent);
+  --toggle-track-hover: var(--accent-hover);
   --burger-line: var(--accent);
   --burger-wave: var(--accent-hover);
   --figure-fill: #000000;
@@ -268,7 +272,7 @@ html[data-contrast="dark"] .site-nav::before {
   overflow: hidden;
   border: 0;
   border-radius: 999px;
-  background: var(--accent);
+  background: var(--toggle-track);
   box-shadow: none;
   transition: background 260ms ease;
 }
@@ -286,7 +290,7 @@ html[data-contrast="dark"] .site-nav::before {
 }
 
 html[data-contrast="dark"] .mode-toggle__track {
-  background: var(--accent);
+  background: var(--toggle-track);
 }
 
 html[data-contrast="dark"] .mode-toggle__knob {
@@ -296,7 +300,7 @@ html[data-contrast="dark"] .mode-toggle__knob {
 
 .mode-toggle:hover .mode-toggle__track,
 .mode-toggle:focus-visible .mode-toggle__track {
-  background: var(--accent-hover);
+  background: var(--toggle-track-hover);
 }
 
 .nav-brand {
@@ -355,7 +359,7 @@ html[data-contrast="dark"] .nav-brand__logo--dark {
 
 .menu-toggle:hover span,
 .menu-toggle:focus-visible span {
-  background: var(--accent-hover);
+  background: var(--burger-wave);
 }
 
 .menu-toggle span::before {
@@ -394,11 +398,11 @@ html[data-contrast="dark"] .nav-brand__logo--dark {
 }
 
 .menu-toggle.is-open span {
-  background: var(--accent);
+  background: var(--burger-line);
 }
 
 .menu-toggle.is-open span::before {
-  background: var(--accent-hover);
+  background: var(--burger-wave);
 }
 
 .menu-toggle.is-open span:nth-child(1) {
@@ -1343,22 +1347,15 @@ body.past-hero .site-nav .nav-fade-item {
   margin-bottom: clamp(0.9rem, 1.4vw, 1.2rem);
 }
 
-.schedule-year-wrap {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-self: center;
-  width: max-content;
-  gap: clamp(0.5rem, 0.9vw, 0.75rem);
-}
-
 .schedule-year {
-  margin: 0;
   color: var(--accent);
+  white-space: nowrap;
 }
 
 .schedule-enquire-button {
   display: inline-flex;
+  justify-self: center;
+  min-width: clamp(4.625rem, 7.35vw, 5.875rem);
   min-height: clamp(1.85rem, 2.3vw, 2.55rem);
   align-items: center;
   justify-content: center;
@@ -1369,7 +1366,7 @@ body.past-hero .site-nav .nav-fade-item {
   font-size: clamp(0.74rem, 0.9vw, 0.95rem);
   font-weight: 900;
   line-height: 1;
-  padding: 0;
+  padding: 0 0.55rem;
   transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
 }
 
@@ -1438,6 +1435,7 @@ body.past-hero .site-nav .nav-fade-item {
 
 .gallery-carousel {
   position: relative;
+  --carousel-controls-space: calc(34px + 1rem);
   margin-top: 2rem;
   padding: 0 clamp(62px, 5.4vw, 86px);
 }
@@ -1446,9 +1444,14 @@ body.past-hero .site-nav .nav-fade-item {
   margin-top: 0;
 }
 
+.gallery-carousel__controls,
+.performance-carousel__controls {
+  display: contents;
+}
+
 .gallery-carousel__nav {
   position: absolute;
-  top: 50%;
+  top: calc((100% - var(--carousel-controls-space)) / 2);
   z-index: 2;
   display: grid;
   width: clamp(52px, 4.8vw, 68px);
@@ -1512,6 +1515,7 @@ body.past-hero .site-nav .nav-fade-item {
 
 .performance-carousel {
   position: relative;
+  --carousel-controls-space: calc(34px + 1rem);
   margin-top: 2rem;
   padding: 0 clamp(62px, 5.4vw, 86px);
 }
@@ -1522,7 +1526,7 @@ body.past-hero .site-nav .nav-fade-item {
 
 .performance-carousel__nav {
   position: absolute;
-  top: 50%;
+  top: calc((100% - var(--carousel-controls-space)) / 2);
   z-index: 2;
   display: grid;
   width: clamp(52px, 4.8vw, 68px);
@@ -2178,41 +2182,40 @@ body.past-hero .site-nav .nav-fade-item {
     grid-auto-rows: auto;
   }
 
-  .gallery-carousel {
-    padding: 0;
-  }
-
+  .gallery-carousel,
   .performance-carousel {
+    display: grid;
+    row-gap: 1rem;
     padding: 0;
   }
 
-  .gallery-carousel__nav {
-    top: auto;
-    bottom: 1rem;
+  .gallery-carousel__controls,
+  .performance-carousel__controls {
+    display: grid;
+    grid-template-columns: 48px auto 48px;
+    column-gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-carousel__status,
+  .performance-pagination {
+    margin: 0;
+  }
+
+  .gallery-carousel__nav,
+  .performance-carousel__nav {
+    position: static;
+    inset: auto;
     width: 48px;
     transform: none;
   }
 
-  .performance-carousel__nav {
-    width: 48px;
-  }
-
-  .gallery-carousel__nav--prev {
-    left: 1rem;
-  }
-
-  .gallery-carousel__nav--next {
-    right: 1rem;
-  }
-
   .gallery-carousel__nav:hover:not(:disabled),
-  .gallery-carousel__nav:focus-visible:not(:disabled) {
-    transform: scale(1.04);
-  }
-
+  .gallery-carousel__nav:focus-visible:not(:disabled),
   .performance-carousel__nav:hover:not(:disabled),
   .performance-carousel__nav:focus-visible:not(:disabled) {
-    transform: translateY(-50%) scale(1.04);
+    transform: scale(1.04);
   }
 
   .photo-card,
@@ -2228,6 +2231,17 @@ body.past-hero .site-nav .nav-fade-item {
 
   .schedule-list {
     margin-top: 2rem;
+  }
+
+  #schedule,
+  #performances {
+    padding-left: clamp(5.5rem, 12vw, 7rem);
+  }
+
+  .site-footer {
+    column-gap: clamp(3rem, 6vw, 4.5rem);
+    padding-right: clamp(2rem, 8vw, 4.5rem);
+    padding-left: clamp(2rem, 8vw, 4.5rem);
   }
 }
 
@@ -2275,7 +2289,25 @@ body.past-hero .site-nav .nav-fade-item {
   .mode-toggle {
     top: auto;
     left: auto;
+    width: 45px;
+    height: 20px;
     transform: none;
+  }
+
+  .mode-toggle__track {
+    width: 45px;
+    height: 20px;
+  }
+
+  .mode-toggle__knob {
+    top: 3px;
+    left: 27px;
+    width: 14px;
+    height: 14px;
+  }
+
+  html[data-contrast="dark"] .mode-toggle__knob {
+    left: 4px;
   }
 
   .menu-toggle {
@@ -2335,16 +2367,78 @@ body.past-hero .site-nav .nav-fade-item {
     padding: 7rem 6vw;
   }
 
+  #about {
+    padding-top: 10rem;
+  }
+
   #schedule {
-    padding-top: 8.75rem;
+    padding-top: 10rem;
   }
 
   #contact-me {
     padding-top: 10rem;
   }
 
+  #gallery,
+  #performances {
+    padding-top: 10rem;
+  }
+
+  #schedule,
+  #performances {
+    padding-left: 6vw;
+  }
+
+  .gallery-carousel,
+  .performance-carousel {
+    display: grid;
+    row-gap: 1rem;
+  }
+
+  .gallery-carousel__controls,
+  .performance-carousel__controls {
+    display: grid;
+    grid-template-columns: 42px auto 42px;
+    column-gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-carousel__status,
+  .performance-pagination {
+    margin: 0;
+  }
+
+  .gallery-carousel__nav,
+  .performance-carousel__nav {
+    position: static;
+    inset: auto;
+    width: 42px;
+    transform: none;
+  }
+
+  .gallery-carousel__nav:hover:not(:disabled),
+  .gallery-carousel__nav:focus-visible:not(:disabled),
+  .performance-carousel__nav:hover:not(:disabled),
+  .performance-carousel__nav:focus-visible:not(:disabled) {
+    transform: scale(1.04);
+  }
+
   .content-section h2 {
     font-size: clamp(1.155rem, 5.39vw, 1.568rem);
+  }
+
+  #about > h2,
+  #schedule .schedule-heading > h2,
+  #contact-me > h2 {
+    max-width: calc(100% - 3rem);
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+  }
+
+  #about .about-intro {
+    max-width: calc(100% - 3rem);
   }
 
   .schedule-heading > h2 {
@@ -2355,6 +2449,7 @@ body.past-hero .site-nav .nav-fade-item {
     min-height: 1.55rem;
     border-width: 1.5px;
     font-size: 0.72rem;
+    padding: 0 0.5rem;
   }
 
   .about-tabs {
@@ -2396,6 +2491,8 @@ body.past-hero .site-nav .nav-fade-item {
   .schedule-list article {
     grid-template-columns: 1fr;
     gap: 0.4rem;
+    justify-items: center;
+    text-align: center;
   }
 
   .photo-lightbox {

@@ -454,7 +454,7 @@ html[data-contrast="dark"] .nav-brand__logo--dark {
   opacity: 0;
   color: var(--menu-ink);
   text-transform: uppercase;
-  font-size: clamp(2rem, 6vw, 6.5rem);
+  font-size: clamp(1rem, 3vw, 3.25rem);
   font-weight: 900;
   line-height: 0.95;
   transition: opacity 260ms ease, transform 420ms cubic-bezier(0.76, 0, 0.24, 1);
@@ -1335,6 +1335,51 @@ body.past-hero .site-nav .nav-fade-item {
   min-width: 0;
 }
 
+.schedule-heading {
+  display: grid;
+}
+
+.schedule-heading > h2 {
+  margin-bottom: clamp(0.9rem, 1.4vw, 1.2rem);
+}
+
+.schedule-year-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-self: center;
+  width: max-content;
+  gap: clamp(0.5rem, 0.9vw, 0.75rem);
+}
+
+.schedule-year {
+  margin: 0;
+  color: var(--accent);
+}
+
+.schedule-enquire-button {
+  display: inline-flex;
+  min-height: clamp(1.85rem, 2.3vw, 2.55rem);
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  font-size: clamp(0.74rem, 0.9vw, 0.95rem);
+  font-weight: 900;
+  line-height: 1;
+  padding: 0;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.schedule-enquire-button:hover,
+.schedule-enquire-button:focus-visible {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+}
+
 .schedule-list {
   display: grid;
   border-top: 3px solid var(--ink);
@@ -1364,7 +1409,7 @@ body.past-hero .site-nav .nav-fade-item {
 
 .schedule-list article {
   display: grid;
-  grid-template-columns: 86px 1fr auto;
+  grid-template-columns: 86px 1fr;
   gap: 1rem;
   align-items: center;
   border-bottom: 3px solid var(--ink);
@@ -1372,19 +1417,8 @@ body.past-hero .site-nav .nav-fade-item {
 }
 
 .schedule-list time,
-.schedule-list span,
-.schedule-list a {
+.schedule-list span {
   font-weight: 900;
-}
-
-.schedule-list a {
-  color: var(--accent);
-  transition: color 180ms ease;
-}
-
-.schedule-list a:hover,
-.schedule-list a:focus-visible {
-  color: var(--accent-hover);
 }
 
 .media-section {
@@ -2297,8 +2331,26 @@ body.past-hero .site-nav .nav-fade-item {
     padding: 7rem 6vw;
   }
 
+  #schedule {
+    padding-top: 8.75rem;
+  }
+
+  #contact-me {
+    padding-top: 10rem;
+  }
+
   .content-section h2 {
     font-size: clamp(1.155rem, 5.39vw, 1.568rem);
+  }
+
+  .schedule-heading > h2 {
+    margin-top: 0;
+  }
+
+  .schedule-enquire-button {
+    min-height: 1.55rem;
+    border-width: 1.5px;
+    font-size: 0.72rem;
   }
 
   .about-tabs {

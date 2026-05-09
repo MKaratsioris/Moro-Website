@@ -55,7 +55,7 @@ if (savedContrast === "dark") {
   root.dataset.contrast = "dark";
 }
 
-const supportedLanguages = ["es", "el", "it", "de", "fr", "ru", "tr", "sv", "da", "hi", "hu", "zh", "ja", "ar"];
+const supportedLanguages = ["es", "el", "it", "de", "fr", "ru", "tr", "sv", "da", "hi", "hu", "zh", "ja", "ar", "ko"];
 const pageLanguage = supportedLanguages.includes(root.lang) ? root.lang : "en";
 const labels = {
   en: {
@@ -223,12 +223,23 @@ const labels = {
     photoAltJoin: "لـ Alejandra Mantiñan",
     unmuteHeroVideo: "تشغيل صوت الفيديو الرئيسي",
   },
+  ko: {
+    closeLanguageMenu: "언어 메뉴 닫기",
+    closeMenu: "메뉴 닫기",
+    heroVideoHasNoAudio: "메인 비디오에 소리가 없습니다",
+    muteHeroVideo: "메인 비디오 음소거",
+    openLanguageMenu: "언어 메뉴 열기",
+    openMedia: "열기",
+    openMenu: "메뉴 열기",
+    photoAltJoin: "Alejandra Mantiñan",
+    unmuteHeroVideo: "메인 비디오 소리 켜기",
+  },
 }[pageLanguage];
 
 const normalizeLanguageUrl = () => {
   if (!window.history?.replaceState || !/^https?:$/.test(window.location.protocol)) return;
 
-  const preferredPaths = { en: "/en", es: "/es", el: "/el", it: "/it", de: "/de", fr: "/fr", ru: "/ru", tr: "/tr", sv: "/sv", da: "/da", hi: "/hi", hu: "/hu", zh: "/zh", ja: "/ja", ar: "/ar" };
+  const preferredPaths = { en: "/en", es: "/es", el: "/el", it: "/it", de: "/de", fr: "/fr", ru: "/ru", tr: "/tr", sv: "/sv", da: "/da", hi: "/hi", hu: "/hu", zh: "/zh", ja: "/ja", ar: "/ar", ko: "/ko" };
   const preferredPath = preferredPaths[pageLanguage] || "/en";
   const languageCodes = Object.keys(preferredPaths);
   const legacyLanguagePaths = languageCodes

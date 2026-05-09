@@ -569,12 +569,52 @@ html[data-contrast="dark"] .language-menu.is-open .language-toggle {
   transform: translate(-50%, -50%);
 }
 
+.flag--korean {
+  background: #ffffff;
+}
+
+.flag--korean::before,
+.flag--korean::after {
+  position: absolute;
+  content: "";
+}
+
+.flag--korean::before {
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 25%, #cd2e3a 0 25%, transparent 26%),
+    radial-gradient(circle at 50% 75%, #0047a0 0 25%, transparent 26%),
+    linear-gradient(180deg, #cd2e3a 0 50%, #0047a0 50%);
+  transform: translate(-50%, -50%) rotate(-34deg);
+}
+
+.flag--korean::after {
+  inset: 19% 17%;
+  background:
+    linear-gradient(#111111 0 0) 8% 9% / 18% 4% no-repeat,
+    linear-gradient(#111111 0 0) 8% 18% / 18% 4% no-repeat,
+    linear-gradient(#111111 0 0) 8% 27% / 18% 4% no-repeat,
+    linear-gradient(#111111 0 0) 74% 9% / 18% 4% no-repeat,
+    linear-gradient(#111111 0 0) 74% 27% / 18% 4% no-repeat,
+    linear-gradient(#111111 0 0) 8% 73% / 18% 4% no-repeat,
+    linear-gradient(#111111 0 0) 8% 91% / 18% 4% no-repeat,
+    linear-gradient(#111111 0 0) 74% 73% / 18% 4% no-repeat,
+    linear-gradient(#111111 0 0) 74% 82% / 18% 4% no-repeat,
+    linear-gradient(#111111 0 0) 74% 91% / 18% 4% no-repeat;
+  opacity: 0.92;
+}
+
 .language-options {
   position: absolute;
   top: calc(100% + 0.7rem);
   left: 50%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.45rem;
   min-width: 0;
   padding: 0.45rem;
@@ -588,6 +628,7 @@ html[data-contrast="dark"] .language-menu.is-open .language-toggle {
   transform: translate(-50%, -6px);
   backdrop-filter: blur(18px) saturate(1.2);
   transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 180ms;
+  overflow: visible;
   visibility: hidden;
 }
 
@@ -606,12 +647,13 @@ html[data-contrast="dark"] .language-options {
 }
 
 .language-options a {
+  position: relative;
   display: grid;
   width: clamp(30px, 2.7vw, 38px);
   aspect-ratio: 1;
   align-items: center;
   justify-items: center;
-  overflow: hidden;
+  overflow: visible;
   padding: 0;
   border-radius: 50%;
   color: inherit;
@@ -619,8 +661,36 @@ html[data-contrast="dark"] .language-options {
 }
 
 .language-options a::after {
-  display: none;
-  content: "";
+  position: absolute;
+  z-index: 12;
+  bottom: calc(100% + 0.45rem);
+  left: 50%;
+  width: max-content;
+  max-width: 8.5rem;
+  padding: 0.32rem 0.48rem;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.16);
+  color: var(--ink);
+  content: attr(data-language-name);
+  font-size: 0.64rem;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translate(-50%, 4px);
+  transition: opacity 160ms ease, transform 160ms ease;
+  white-space: nowrap;
+}
+
+html[data-contrast="dark"] .language-options a::after {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(0, 0, 0, 0.76);
+  box-shadow: 0 12px 22px rgba(255, 255, 255, 0.08);
+  color: #ffffff;
 }
 
 .language-options a .flag {
@@ -635,6 +705,12 @@ html[data-contrast="dark"] .language-options {
 .language-options a:focus-visible {
   background: rgba(255, 255, 255, 0.48);
   transform: translateY(-1px);
+}
+
+.language-options a:hover::after,
+.language-options a:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 html[data-contrast="dark"] .language-options a:hover,
@@ -2628,12 +2704,19 @@ body.past-hero .site-nav .nav-fade-item {
   }
 
   .language-options {
+    gap: 0.38rem;
     padding: 0.4rem;
     border-radius: 13px;
   }
 
+  .language-options a::after {
+    max-width: 7rem;
+    padding: 0.28rem 0.4rem;
+    font-size: 0.56rem;
+  }
+
   .language-options a {
-    width: 29px;
+    width: 28px;
   }
 
   .mode-toggle {

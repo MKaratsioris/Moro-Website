@@ -84,6 +84,11 @@ to = "/pages/ar.html"
 status = 200
 
 [[redirects]]
+from = "/index-ko.html"
+to = "/pages/ko.html"
+status = 200
+
+[[redirects]]
 from = "/en"
 to = "/pages/en.html"
 status = 200
@@ -306,6 +311,21 @@ status = 200
 [[redirects]]
 from = "/ar/*"
 to = "/pages/ar.html"
+status = 200
+
+[[redirects]]
+from = "/ko"
+to = "/pages/ko.html"
+status = 200
+
+[[redirects]]
+from = "/ko/"
+to = "/pages/ko.html"
+status = 200
+
+[[redirects]]
+from = "/ko/*"
+to = "/pages/ko.html"
 status = 200
 
 [[redirects]]

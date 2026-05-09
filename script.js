@@ -591,9 +591,12 @@ renderPerformances();
 const updateLanguageOptionLinks = () => {
   if (!languageOptions.length) return;
 
-  const hash = window.location.hash || "";
+  const hash = window.location.hash === "#home" ? "" : window.location.hash || "";
   languageOptions.forEach((option) => {
-    const baseHref = option.dataset.languageHref || option.getAttribute("href").split("#")[0];
+    const baseHref =
+      window.location.protocol === "file:" && option.dataset.localLanguageHref
+        ? option.dataset.localLanguageHref
+        : option.dataset.languageHref || option.getAttribute("href").split("#")[0];
     option.setAttribute("href", `${baseHref}${hash}`);
   });
 };

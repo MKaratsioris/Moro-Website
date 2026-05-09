@@ -53,7 +53,7 @@ if (savedContrast === "dark") {
   root.dataset.contrast = "dark";
 }
 
-const pageLanguage = root.lang === "es" ? "es" : "en";
+const pageLanguage = ["es", "el"].includes(root.lang) ? root.lang : "en";
 const labels = {
   en: {
     closeLanguageMenu: "Close language menu",
@@ -77,18 +77,31 @@ const labels = {
     photoAltJoin: "de Alejandra Mantiñan",
     unmuteHeroVideo: "Activar audio del video principal",
   },
+  el: {
+    closeLanguageMenu: "Κλείσιμο μενού γλωσσών",
+    closeMenu: "Κλείσιμο μενού",
+    heroVideoHasNoAudio: "Το κεντρικό βίντεο δεν έχει ήχο",
+    muteHeroVideo: "Σίγαση κεντρικού βίντεο",
+    openLanguageMenu: "Άνοιγμα μενού γλωσσών",
+    openMedia: "Άνοιγμα",
+    openMenu: "Άνοιγμα μενού",
+    photoAltJoin: "της Alejandra Mantiñan",
+    unmuteHeroVideo: "Ενεργοποίηση ήχου κεντρικού βίντεο",
+  },
 }[pageLanguage];
 
 const normalizeLanguageUrl = () => {
   if (!window.history?.replaceState || !/^https?:$/.test(window.location.protocol)) return;
 
-  const preferredPath = pageLanguage === "es" ? "/es" : "/en";
+  const preferredPaths = { en: "/en", es: "/es", el: "/el" };
+  const preferredPath = preferredPaths[pageLanguage] || "/en";
   const currentPath = window.location.pathname;
   const cleanHash = window.location.hash === "#home" ? "" : window.location.hash;
   const shouldNormalize =
     currentPath === "/" ||
     currentPath === "/index.html" ||
     currentPath === "/index-es.html" ||
+    currentPath === "/index-el.html" ||
     currentPath === `${preferredPath}/` ||
     window.location.hash === "#home";
 
@@ -789,7 +802,7 @@ const showPhoto = (index) => {
   currentPhotoIndex = (index + mediaManifest.gallery.length) % mediaManifest.gallery.length;
   const item = mediaManifest.gallery[currentPhotoIndex];
   photoPreview.src = resolveSitePath(item.src);
-  photoPreview.alt = item.alt || `${titleFromPath(item.src)} of Alejandra Mantinan`;
+  photoPreview.alt = item.alt || `${titleFromPath(item.src)} ${labels.photoAltJoin}`;
   photoCount.textContent = `${currentPhotoIndex + 1} / ${mediaManifest.gallery.length}`;
 };
 

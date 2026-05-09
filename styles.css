@@ -447,6 +447,14 @@ html[data-contrast="dark"] .language-menu.is-open .language-toggle {
   background: linear-gradient(180deg, #aa151b 0 25%, #f1bf00 25% 75%, #aa151b 75%);
 }
 
+.flag--greek {
+  background:
+    linear-gradient(90deg, transparent 0 22%, #ffffff 22% 34%, transparent 34%) 0 0 / 56% 56% no-repeat,
+    linear-gradient(180deg, transparent 0 22%, #ffffff 22% 34%, transparent 34%) 0 0 / 56% 56% no-repeat,
+    linear-gradient(#0d5eaf 0 0) 0 0 / 56% 56% no-repeat,
+    repeating-linear-gradient(180deg, #0d5eaf 0 11.111%, #ffffff 11.111% 22.222%);
+}
+
 .language-options {
   position: absolute;
   top: calc(100% + 0.7rem);

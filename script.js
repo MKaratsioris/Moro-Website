@@ -28,6 +28,8 @@ const performancePrev = document.querySelector("[data-performance-prev]");
 const performanceNext = document.querySelector("[data-performance-next]");
 const performancePagination = document.querySelector("[data-performance-pagination]");
 const scheduleList = document.querySelector(".schedule-list");
+const visitorCounter = document.querySelector("[data-visitor-counter]");
+const visitorCount = document.querySelector("[data-visitor-count]");
 const photoLightbox = document.querySelector("[data-photo-lightbox]");
 const photoPreview = document.querySelector("[data-photo-preview]");
 const photoClose = document.querySelector("[data-photo-close]");
@@ -53,7 +55,8 @@ if (savedContrast === "dark") {
   root.dataset.contrast = "dark";
 }
 
-const pageLanguage = ["es", "el", "it", "de", "fr"].includes(root.lang) ? root.lang : "en";
+const supportedLanguages = ["es", "el", "it", "de", "fr", "ru", "tr", "sv", "da"];
+const pageLanguage = supportedLanguages.includes(root.lang) ? root.lang : "en";
 const labels = {
   en: {
     closeLanguageMenu: "Close language menu",
@@ -121,29 +124,69 @@ const labels = {
     photoAltJoin: "d'Alejandra Mantiñan",
     unmuteHeroVideo: "Activer le son de la vidéo principale",
   },
+  ru: {
+    closeLanguageMenu: "Закрыть меню языков",
+    closeMenu: "Закрыть меню",
+    heroVideoHasNoAudio: "В главном видео нет звука",
+    muteHeroVideo: "Отключить звук главного видео",
+    openLanguageMenu: "Открыть меню языков",
+    openMedia: "Открыть",
+    openMenu: "Открыть меню",
+    photoAltJoin: "Alejandra Mantiñan",
+    unmuteHeroVideo: "Включить звук главного видео",
+  },
+  tr: {
+    closeLanguageMenu: "Dil menüsünü kapat",
+    closeMenu: "Menüyü kapat",
+    heroVideoHasNoAudio: "Ana videoda ses yok",
+    muteHeroVideo: "Ana videonun sesini kapat",
+    openLanguageMenu: "Dil menüsünü aç",
+    openMedia: "Aç",
+    openMenu: "Menüyü aç",
+    photoAltJoin: "Alejandra Mantiñan",
+    unmuteHeroVideo: "Ana videonun sesini aç",
+  },
+  sv: {
+    closeLanguageMenu: "Stäng språkmenyn",
+    closeMenu: "Stäng menyn",
+    heroVideoHasNoAudio: "Huvudvideon har inget ljud",
+    muteHeroVideo: "Stäng av ljudet i huvudvideon",
+    openLanguageMenu: "Öppna språkmenyn",
+    openMedia: "Öppna",
+    openMenu: "Öppna menyn",
+    photoAltJoin: "av Alejandra Mantiñan",
+    unmuteHeroVideo: "Slå på ljudet i huvudvideon",
+  },
+  da: {
+    closeLanguageMenu: "Luk sprogmenuen",
+    closeMenu: "Luk menuen",
+    heroVideoHasNoAudio: "Hovedvideoen har ingen lyd",
+    muteHeroVideo: "Slå lyden fra hovedvideoen",
+    openLanguageMenu: "Åbn sprogmenuen",
+    openMedia: "Åbn",
+    openMenu: "Åbn menuen",
+    photoAltJoin: "af Alejandra Mantiñan",
+    unmuteHeroVideo: "Slå lyden til hovedvideoen",
+  },
 }[pageLanguage];
 
 const normalizeLanguageUrl = () => {
   if (!window.history?.replaceState || !/^https?:$/.test(window.location.protocol)) return;
 
-  const preferredPaths = { en: "/en", es: "/es", el: "/el", it: "/it", de: "/de", fr: "/fr" };
+  const preferredPaths = { en: "/en", es: "/es", el: "/el", it: "/it", de: "/de", fr: "/fr", ru: "/ru", tr: "/tr", sv: "/sv", da: "/da" };
   const preferredPath = preferredPaths[pageLanguage] || "/en";
+  const languageCodes = Object.keys(preferredPaths);
+  const legacyLanguagePaths = languageCodes
+    .filter((language) => language !== "en")
+    .map((language) => `/index-${language}.html`);
+  const pageLanguagePaths = languageCodes.map((language) => `/pages/${language}.html`);
   const currentPath = window.location.pathname;
   const cleanHash = window.location.hash === "#home" ? "" : window.location.hash;
   const shouldNormalize =
     currentPath === "/" ||
     currentPath === "/index.html" ||
-    currentPath === "/index-es.html" ||
-    currentPath === "/index-el.html" ||
-    currentPath === "/index-it.html" ||
-    currentPath === "/index-de.html" ||
-    currentPath === "/index-fr.html" ||
-    currentPath === "/pages/en.html" ||
-    currentPath === "/pages/es.html" ||
-    currentPath === "/pages/el.html" ||
-    currentPath === "/pages/it.html" ||
-    currentPath === "/pages/de.html" ||
-    currentPath === "/pages/fr.html" ||
+    legacyLanguagePaths.includes(currentPath) ||
+    pageLanguagePaths.includes(currentPath) ||
     currentPath === `${preferredPath}/` ||
     window.location.hash === "#home";
 
@@ -162,6 +205,51 @@ const resolveSitePath = (src) => {
 
   return `/${src}`;
 };
+
+const updateVisitorCounter = async () => {
+  if (!visitorCounter || !visitorCount) return;
+
+  const formatCount = (count) => new Intl.NumberFormat(pageLanguage).format(count);
+  const localCount = () => {
+    const countKey = "alejandra-local-visitor-count";
+    const sessionKey = "alejandra-local-visitor-counted";
+
+    try {
+      const storedCount = Number(localStorage.getItem(countKey)) || 0;
+      const shouldCountVisit = !sessionStorage.getItem(sessionKey);
+      const nextCount = shouldCountVisit ? storedCount + 1 : Math.max(storedCount, 1);
+
+      if (shouldCountVisit) {
+        localStorage.setItem(countKey, String(nextCount));
+        sessionStorage.setItem(sessionKey, "true");
+      }
+
+      return nextCount;
+    } catch {
+      return 1;
+    }
+  };
+
+  const endpoint = visitorCounter.dataset.visitorEndpoint;
+  let count;
+
+  if (endpoint && /^https?:$/.test(window.location.protocol)) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+      });
+      const data = response.ok ? await response.json() : {};
+      count = Number(data.count);
+    } catch {
+      count = undefined;
+    }
+  }
+
+  visitorCount.textContent = formatCount(Number.isFinite(count) ? count : localCount());
+};
+
+updateVisitorCounter();
 
 const updateSectionPath = () => {
   if (!siteMain || !sectionPath || !sectionPathLine || sectionSteps.length < 2) return;

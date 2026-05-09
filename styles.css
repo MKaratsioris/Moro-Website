@@ -467,6 +467,51 @@ html[data-contrast="dark"] .language-menu.is-open .language-toggle {
   background: linear-gradient(90deg, #0055a4 0 33.333%, #ffffff 33.333% 66.666%, #ef4135 66.666%);
 }
 
+.flag--russian {
+  background: linear-gradient(180deg, #ffffff 0 33.333%, #0039a6 33.333% 66.666%, #d52b1e 66.666%);
+}
+
+.flag--turkish {
+  background: #e30a17;
+}
+
+.flag--turkish::before,
+.flag--turkish::after {
+  position: absolute;
+  content: "";
+}
+
+.flag--turkish::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at 38% 50%, #ffffff 0 20%, transparent 21%),
+    radial-gradient(circle at 46% 50%, #e30a17 0 17%, transparent 18%);
+}
+
+.flag--turkish::after {
+  top: 39%;
+  left: 61%;
+  width: 20%;
+  aspect-ratio: 1;
+  background: #ffffff;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 56%, 79% 91%, 50% 70%, 21% 91%, 32% 56%, 2% 35%, 39% 35%);
+  transform: rotate(-18deg);
+}
+
+.flag--swedish {
+  background:
+    linear-gradient(90deg, transparent 0 29%, #fecc00 29% 43%, transparent 43%),
+    linear-gradient(180deg, transparent 0 38%, #fecc00 38% 52%, transparent 52%),
+    #006aa7;
+}
+
+.flag--danish {
+  background:
+    linear-gradient(90deg, transparent 0 30%, #ffffff 30% 43%, transparent 43%),
+    linear-gradient(180deg, transparent 0 39%, #ffffff 39% 53%, transparent 53%),
+    #c60c30;
+}
+
 .language-options {
   position: absolute;
   top: calc(100% + 0.7rem);
@@ -1893,6 +1938,38 @@ body.past-hero .site-nav .nav-fade-item {
   color: var(--accent-hover);
 }
 
+.contact-section {
+  padding-bottom: 10rem;
+}
+
+.visitor-counter {
+  position: absolute;
+  right: clamp(1.5rem, 6vw, 5rem);
+  bottom: clamp(1.5rem, 5vw, 4rem);
+  display: grid;
+  gap: 0.28rem;
+  justify-items: end;
+  text-align: right;
+  pointer-events: none;
+}
+
+.visitor-counter__label {
+  color: var(--muted);
+  font-size: clamp(0.58rem, 0.8vw, 0.78rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.visitor-counter__value {
+  color: var(--accent);
+  font-size: clamp(1.35rem, 2.8vw, 2.6rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  line-height: 0.9;
+}
+
 .site-footer {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -2689,6 +2766,23 @@ body.past-hero .site-nav .nav-fade-item {
 
   .large-email {
     font-size: 1.28rem;
+  }
+
+  .contact-section {
+    padding-bottom: 8rem;
+  }
+
+  .visitor-counter {
+    right: 6vw;
+    bottom: 2.2rem;
+  }
+
+  .visitor-counter__label {
+    font-size: 0.58rem;
+  }
+
+  .visitor-counter__value {
+    font-size: 1.25rem;
   }
 
   .site-footer {

@@ -4,51 +4,71 @@
 
 
 [[redirects]]
+from = "/"
+to = "/pages/en.html"
+status = 200
+
+[[redirects]]
+from = "/index.html"
+to = "/pages/en.html"
+status = 200
+
+[[redirects]]
+from = "/index-es.html"
+to = "/pages/es.html"
+status = 200
+
+[[redirects]]
+from = "/index-el.html"
+to = "/pages/el.html"
+status = 200
+
+[[redirects]]
 from = "/en"
-to = "/index.html"
+to = "/pages/en.html"
 status = 200
 
 [[redirects]]
 from = "/en/"
-to = "/index.html"
+to = "/pages/en.html"
 status = 200
 
 [[redirects]]
 from = "/en/*"
-to = "/index.html"
+to = "/pages/en.html"
 status = 200
 
 [[redirects]]
 from = "/es"
-to = "/index-es.html"
+to = "/pages/es.html"
 status = 200
 
 [[redirects]]
 from = "/es/"
-to = "/index-es.html"
+to = "/pages/es.html"
 status = 200
 
 [[redirects]]
 from = "/es/*"
-to = "/index-es.html"
+to = "/pages/es.html"
 status = 200
 
 [[redirects]]
 from = "/el"
-to = "/index-el.html"
+to = "/pages/el.html"
 status = 200
 
 [[redirects]]
 from = "/el/"
-to = "/index-el.html"
+to = "/pages/el.html"
 status = 200
 
 [[redirects]]
 from = "/el/*"
-to = "/index-el.html"
+to = "/pages/el.html"
 status = 200
 
 [[redirects]]
 from = "/*"
-to = "/index.html"
+to = "/pages/en.html"
 status = 200

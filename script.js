@@ -102,6 +102,9 @@ const normalizeLanguageUrl = () => {
     currentPath === "/index.html" ||
     currentPath === "/index-es.html" ||
     currentPath === "/index-el.html" ||
+    currentPath === "/pages/en.html" ||
+    currentPath === "/pages/es.html" ||
+    currentPath === "/pages/el.html" ||
     currentPath === `${preferredPath}/` ||
     window.location.hash === "#home";
 
@@ -113,7 +116,10 @@ const normalizeLanguageUrl = () => {
 normalizeLanguageUrl();
 
 const resolveSitePath = (src) => {
-  if (!src || window.location.protocol === "file:" || /^(?:[a-z][a-z0-9+.-]*:|\/|#)/i.test(src)) return src;
+  if (!src || /^(?:[a-z][a-z0-9+.-]*:|\/|#)/i.test(src)) return src;
+  if (window.location.protocol === "file:") {
+    return window.location.pathname.replace(/\\/g, "/").includes("/pages/") ? `../${src}` : src;
+  }
 
   return `/${src}`;
 };

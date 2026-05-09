@@ -2261,6 +2261,10 @@ body.past-hero .site-nav .nav-fade-item {
     font-size: 0.76rem;
   }
 
+  .menu-panel a {
+    font-size: clamp(1.5rem, 4.5vw, 4.875rem);
+  }
+
   .site-nav {
     grid-template-columns: auto minmax(0, 1fr) auto;
     column-gap: 0.4rem;

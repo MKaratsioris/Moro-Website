@@ -512,12 +512,69 @@ html[data-contrast="dark"] .language-menu.is-open .language-toggle {
     #c60c30;
 }
 
+.flag--arabic {
+  background:
+    linear-gradient(34deg, #ce1126 0 25%, transparent 25.5%),
+    linear-gradient(180deg, #000000 0 33.333%, #ffffff 33.333% 66.666%, #007a3d 66.666%);
+}
+
+.flag--chinese {
+  background: #de2910;
+}
+
+.flag--chinese::before {
+  position: absolute;
+  top: 16%;
+  left: 18%;
+  width: 28%;
+  aspect-ratio: 1;
+  background: #ffde00;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 56%, 79% 91%, 50% 70%, 21% 91%, 32% 56%, 2% 35%, 39% 35%);
+  content: "";
+}
+
+.flag--indian {
+  background: linear-gradient(180deg, #ff9933 0 33.333%, #ffffff 33.333% 66.666%, #138808 66.666%);
+}
+
+.flag--indian::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18%;
+  aspect-ratio: 1;
+  border: 1.5px solid #000080;
+  border-radius: 50%;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.flag--hungarian {
+  background: linear-gradient(180deg, #ce2939 0 33.333%, #ffffff 33.333% 66.666%, #477050 66.666%);
+}
+
+.flag--japanese {
+  background: #ffffff;
+}
+
+.flag--japanese::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #bc002d;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
 .language-options {
   position: absolute;
   top: calc(100% + 0.7rem);
   left: 50%;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.45rem;
   min-width: 0;
   padding: 0.45rem;
@@ -577,7 +634,7 @@ html[data-contrast="dark"] .language-options {
 .language-options a:hover,
 .language-options a:focus-visible {
   background: rgba(255, 255, 255, 0.48);
-  transform: translateX(2px);
+  transform: translateY(-1px);
 }
 
 html[data-contrast="dark"] .language-options a:hover,

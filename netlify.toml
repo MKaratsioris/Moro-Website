@@ -59,6 +59,31 @@ to = "/pages/da.html"
 status = 200
 
 [[redirects]]
+from = "/index-hi.html"
+to = "/pages/hi.html"
+status = 200
+
+[[redirects]]
+from = "/index-hu.html"
+to = "/pages/hu.html"
+status = 200
+
+[[redirects]]
+from = "/index-zh.html"
+to = "/pages/zh.html"
+status = 200
+
+[[redirects]]
+from = "/index-ja.html"
+to = "/pages/ja.html"
+status = 200
+
+[[redirects]]
+from = "/index-ar.html"
+to = "/pages/ar.html"
+status = 200
+
+[[redirects]]
 from = "/en"
 to = "/pages/en.html"
 status = 200
@@ -206,6 +231,81 @@ status = 200
 [[redirects]]
 from = "/da/*"
 to = "/pages/da.html"
+status = 200
+
+[[redirects]]
+from = "/hi"
+to = "/pages/hi.html"
+status = 200
+
+[[redirects]]
+from = "/hi/"
+to = "/pages/hi.html"
+status = 200
+
+[[redirects]]
+from = "/hi/*"
+to = "/pages/hi.html"
+status = 200
+
+[[redirects]]
+from = "/hu"
+to = "/pages/hu.html"
+status = 200
+
+[[redirects]]
+from = "/hu/"
+to = "/pages/hu.html"
+status = 200
+
+[[redirects]]
+from = "/hu/*"
+to = "/pages/hu.html"
+status = 200
+
+[[redirects]]
+from = "/zh"
+to = "/pages/zh.html"
+status = 200
+
+[[redirects]]
+from = "/zh/"
+to = "/pages/zh.html"
+status = 200
+
+[[redirects]]
+from = "/zh/*"
+to = "/pages/zh.html"
+status = 200
+
+[[redirects]]
+from = "/ja"
+to = "/pages/ja.html"
+status = 200
+
+[[redirects]]
+from = "/ja/"
+to = "/pages/ja.html"
+status = 200
+
+[[redirects]]
+from = "/ja/*"
+to = "/pages/ja.html"
+status = 200
+
+[[redirects]]
+from = "/ar"
+to = "/pages/ar.html"
+status = 200
+
+[[redirects]]
+from = "/ar/"
+to = "/pages/ar.html"
+status = 200
+
+[[redirects]]
+from = "/ar/*"
+to = "/pages/ar.html"
 status = 200
 
 [[redirects]]

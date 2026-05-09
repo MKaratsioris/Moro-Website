@@ -55,7 +55,7 @@ if (savedContrast === "dark") {
   root.dataset.contrast = "dark";
 }
 
-const supportedLanguages = ["es", "el", "it", "de", "fr", "ru", "tr", "sv", "da"];
+const supportedLanguages = ["es", "el", "it", "de", "fr", "ru", "tr", "sv", "da", "hi", "hu", "zh", "ja", "ar"];
 const pageLanguage = supportedLanguages.includes(root.lang) ? root.lang : "en";
 const labels = {
   en: {
@@ -168,12 +168,67 @@ const labels = {
     photoAltJoin: "af Alejandra Mantiñan",
     unmuteHeroVideo: "Slå lyden til hovedvideoen",
   },
+  hi: {
+    closeLanguageMenu: "भाषा मेनू बंद करें",
+    closeMenu: "मेनू बंद करें",
+    heroVideoHasNoAudio: "मुख्य वीडियो में ध्वनि नहीं है",
+    muteHeroVideo: "मुख्य वीडियो की ध्वनि बंद करें",
+    openLanguageMenu: "भाषा मेनू खोलें",
+    openMedia: "खोलें",
+    openMenu: "मेनू खोलें",
+    photoAltJoin: "Alejandra Mantiñan की",
+    unmuteHeroVideo: "मुख्य वीडियो की ध्वनि चालू करें",
+  },
+  hu: {
+    closeLanguageMenu: "Nyelvi menü bezárása",
+    closeMenu: "Menü bezárása",
+    heroVideoHasNoAudio: "A fő videónak nincs hangja",
+    muteHeroVideo: "Fő videó némítása",
+    openLanguageMenu: "Nyelvi menü megnyitása",
+    openMedia: "Megnyitás",
+    openMenu: "Menü megnyitása",
+    photoAltJoin: "Alejandra Mantiñan képe",
+    unmuteHeroVideo: "Fő videó hangjának bekapcsolása",
+  },
+  zh: {
+    closeLanguageMenu: "关闭语言菜单",
+    closeMenu: "关闭菜单",
+    heroVideoHasNoAudio: "主视频没有声音",
+    muteHeroVideo: "关闭主视频声音",
+    openLanguageMenu: "打开语言菜单",
+    openMedia: "打开",
+    openMenu: "打开菜单",
+    photoAltJoin: "Alejandra Mantiñan",
+    unmuteHeroVideo: "打开主视频声音",
+  },
+  ja: {
+    closeLanguageMenu: "言語メニューを閉じる",
+    closeMenu: "メニューを閉じる",
+    heroVideoHasNoAudio: "メイン動画に音声はありません",
+    muteHeroVideo: "メイン動画をミュート",
+    openLanguageMenu: "言語メニューを開く",
+    openMedia: "開く",
+    openMenu: "メニューを開く",
+    photoAltJoin: "Alejandra Mantiñan",
+    unmuteHeroVideo: "メイン動画の音声をオン",
+  },
+  ar: {
+    closeLanguageMenu: "إغلاق قائمة اللغات",
+    closeMenu: "إغلاق القائمة",
+    heroVideoHasNoAudio: "الفيديو الرئيسي بلا صوت",
+    muteHeroVideo: "كتم صوت الفيديو الرئيسي",
+    openLanguageMenu: "فتح قائمة اللغات",
+    openMedia: "فتح",
+    openMenu: "فتح القائمة",
+    photoAltJoin: "لـ Alejandra Mantiñan",
+    unmuteHeroVideo: "تشغيل صوت الفيديو الرئيسي",
+  },
 }[pageLanguage];
 
 const normalizeLanguageUrl = () => {
   if (!window.history?.replaceState || !/^https?:$/.test(window.location.protocol)) return;
 
-  const preferredPaths = { en: "/en", es: "/es", el: "/el", it: "/it", de: "/de", fr: "/fr", ru: "/ru", tr: "/tr", sv: "/sv", da: "/da" };
+  const preferredPaths = { en: "/en", es: "/es", el: "/el", it: "/it", de: "/de", fr: "/fr", ru: "/ru", tr: "/tr", sv: "/sv", da: "/da", hi: "/hi", hu: "/hu", zh: "/zh", ja: "/ja", ar: "/ar" };
   const preferredPath = preferredPaths[pageLanguage] || "/en";
   const languageCodes = Object.keys(preferredPaths);
   const legacyLanguagePaths = languageCodes

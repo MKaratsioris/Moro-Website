@@ -79,6 +79,32 @@ const labels = {
   },
 }[pageLanguage];
 
+const normalizeLanguageUrl = () => {
+  if (!window.history?.replaceState || !/^https?:$/.test(window.location.protocol)) return;
+
+  const preferredPath = pageLanguage === "es" ? "/es" : "/en";
+  const currentPath = window.location.pathname;
+  const cleanHash = window.location.hash === "#home" ? "" : window.location.hash;
+  const shouldNormalize =
+    currentPath === "/" ||
+    currentPath === "/index.html" ||
+    currentPath === "/index-es.html" ||
+    currentPath === `${preferredPath}/` ||
+    window.location.hash === "#home";
+
+  if (shouldNormalize) {
+    window.history.replaceState(null, "", `${preferredPath}${window.location.search}${cleanHash}`);
+  }
+};
+
+normalizeLanguageUrl();
+
+const resolveSitePath = (src) => {
+  if (!src || window.location.protocol === "file:" || /^(?:[a-z][a-z0-9+.-]*:|\/|#)/i.test(src)) return src;
+
+  return `/${src}`;
+};
+
 const updateSectionPath = () => {
   if (!siteMain || !sectionPath || !sectionPathLine || sectionSteps.length < 2) return;
 
@@ -336,14 +362,16 @@ const playHeroVideoLayer = (video) => {
 const prepareHeroVideoLayer = (video, src) => {
   if (!video || !src) return;
 
+  const videoSrc = resolveSitePath(src);
   video.muted = heroAudioMuted;
   video.volume = heroAudioMuted ? 0 : 1;
   video.autoplay = false;
   video.removeAttribute("autoplay");
   video.loop = false;
   video.playsInline = true;
-  if (video.getAttribute("src") !== src) {
-    video.src = src;
+  video.dataset.mediaSrc = src;
+  if (video.getAttribute("src") !== videoSrc) {
+    video.src = videoSrc;
     video.load();
   }
 
@@ -360,19 +388,21 @@ const preloadNextHeroVideo = () => {
 
   const standbyVideo = getStandbyHeroVideoLayer();
   const nextVideo = videos[(currentHeroVideoIndex + 1) % videos.length];
-  if (standbyVideo?.getAttribute("src") !== nextVideo.src) {
+  const nextVideoSrc = resolveSitePath(nextVideo.src);
+  if (standbyVideo?.getAttribute("src") !== nextVideoSrc) {
     standbyVideo.pause();
     standbyVideo.muted = true;
     standbyVideo.volume = 0;
     standbyVideo.classList.remove("is-active");
-    standbyVideo.src = nextVideo.src;
+    standbyVideo.dataset.mediaSrc = nextVideo.src;
+    standbyVideo.src = nextVideoSrc;
     standbyVideo.load();
   }
 };
 
 const handleHeroVideoError = (event) => {
   const failedVideo = event.currentTarget;
-  const failedSrc = event.currentTarget?.getAttribute("src");
+  const failedSrc = failedVideo?.dataset.mediaSrc || failedVideo?.getAttribute("src");
   if (failedSrc) {
     unavailableHeroVideoSources.add(failedSrc);
   }
@@ -480,7 +510,7 @@ const renderGallery = () => {
     button.setAttribute("aria-label", `${labels.openMedia} ${item.alt || titleFromPath(item.src)}`);
 
     const image = document.createElement("img");
-    image.src = item.src;
+    image.src = resolveSitePath(item.src);
     image.alt = item.alt || `${titleFromPath(item.src)} ${labels.photoAltJoin}`;
     image.loading = index === 0 ? "eager" : "lazy";
 
@@ -569,7 +599,7 @@ const renderPerformances = () => {
   video.playsInline = true;
 
   const source = document.createElement("source");
-  source.src = item.src;
+  source.src = resolveSitePath(item.src);
   source.type = item.type || videoTypeFromPath(item.src);
   video.append(source);
 
@@ -758,7 +788,7 @@ const showPhoto = (index) => {
 
   currentPhotoIndex = (index + mediaManifest.gallery.length) % mediaManifest.gallery.length;
   const item = mediaManifest.gallery[currentPhotoIndex];
-  photoPreview.src = item.src;
+  photoPreview.src = resolveSitePath(item.src);
   photoPreview.alt = item.alt || `${titleFromPath(item.src)} of Alejandra Mantinan`;
   photoCount.textContent = `${currentPhotoIndex + 1} / ${mediaManifest.gallery.length}`;
 };
@@ -831,7 +861,7 @@ const refreshMediaManifest = async () => {
   if (!/^https?:$/.test(window.location.protocol)) return;
 
   try {
-    const response = await fetch(`media-manifest.js?updated=${Date.now()}`, { cache: "no-store" });
+    const response = await fetch(`${resolveSitePath("media-manifest.js")}?updated=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) return;
 
     const nextManifest = parseManifestScript(await response.text());

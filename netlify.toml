@@ -4,37 +4,12 @@
 
 
 [[redirects]]
-from = "/"
-to = "/en"
-status = 301
-force = true
-
-[[redirects]]
-from = "/index.html"
-to = "/en"
-status = 301
-force = true
-
-[[redirects]]
-from = "/index-es.html"
-to = "/es"
-status = 301
-force = true
+from = "/en"
+to = "/index.html"
+status = 200
 
 [[redirects]]
 from = "/en/"
-to = "/en"
-status = 301
-force = true
-
-[[redirects]]
-from = "/es/"
-to = "/es"
-status = 301
-force = true
-
-[[redirects]]
-from = "/en"
 to = "/index.html"
 status = 200
 
@@ -45,6 +20,11 @@ status = 200
 
 [[redirects]]
 from = "/es"
+to = "/index-es.html"
+status = 200
+
+[[redirects]]
+from = "/es/"
 to = "/index-es.html"
 status = 200
 

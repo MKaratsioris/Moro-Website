@@ -10,18 +10,6 @@ status = 301
 force = true
 
 [[redirects]]
-from = "/index.html"
-to = "/en"
-status = 301
-force = true
-
-[[redirects]]
-from = "/index-es.html"
-to = "/es"
-status = 301
-force = true
-
-[[redirects]]
 from = "/en/"
 to = "/en"
 status = 301

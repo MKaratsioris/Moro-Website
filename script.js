@@ -53,7 +53,7 @@ if (savedContrast === "dark") {
   root.dataset.contrast = "dark";
 }
 
-const pageLanguage = ["es", "el"].includes(root.lang) ? root.lang : "en";
+const pageLanguage = ["es", "el", "it", "de", "fr"].includes(root.lang) ? root.lang : "en";
 const labels = {
   en: {
     closeLanguageMenu: "Close language menu",
@@ -88,12 +88,45 @@ const labels = {
     photoAltJoin: "της Alejandra Mantiñan",
     unmuteHeroVideo: "Ενεργοποίηση ήχου κεντρικού βίντεο",
   },
+  it: {
+    closeLanguageMenu: "Chiudi menu lingue",
+    closeMenu: "Chiudi menu",
+    heroVideoHasNoAudio: "Il video principale non ha audio",
+    muteHeroVideo: "Disattiva audio del video principale",
+    openLanguageMenu: "Apri menu lingue",
+    openMedia: "Apri",
+    openMenu: "Apri menu",
+    photoAltJoin: "di Alejandra Mantiñan",
+    unmuteHeroVideo: "Attiva audio del video principale",
+  },
+  de: {
+    closeLanguageMenu: "Sprachmenü schließen",
+    closeMenu: "Menü schließen",
+    heroVideoHasNoAudio: "Das Hauptvideo hat keinen Ton",
+    muteHeroVideo: "Hauptvideo stummschalten",
+    openLanguageMenu: "Sprachmenü öffnen",
+    openMedia: "Öffnen",
+    openMenu: "Menü öffnen",
+    photoAltJoin: "von Alejandra Mantiñan",
+    unmuteHeroVideo: "Ton des Hauptvideos einschalten",
+  },
+  fr: {
+    closeLanguageMenu: "Fermer le menu des langues",
+    closeMenu: "Fermer le menu",
+    heroVideoHasNoAudio: "La vidéo principale n'a pas de son",
+    muteHeroVideo: "Couper le son de la vidéo principale",
+    openLanguageMenu: "Ouvrir le menu des langues",
+    openMedia: "Ouvrir",
+    openMenu: "Ouvrir le menu",
+    photoAltJoin: "d'Alejandra Mantiñan",
+    unmuteHeroVideo: "Activer le son de la vidéo principale",
+  },
 }[pageLanguage];
 
 const normalizeLanguageUrl = () => {
   if (!window.history?.replaceState || !/^https?:$/.test(window.location.protocol)) return;
 
-  const preferredPaths = { en: "/en", es: "/es", el: "/el" };
+  const preferredPaths = { en: "/en", es: "/es", el: "/el", it: "/it", de: "/de", fr: "/fr" };
   const preferredPath = preferredPaths[pageLanguage] || "/en";
   const currentPath = window.location.pathname;
   const cleanHash = window.location.hash === "#home" ? "" : window.location.hash;
@@ -102,9 +135,15 @@ const normalizeLanguageUrl = () => {
     currentPath === "/index.html" ||
     currentPath === "/index-es.html" ||
     currentPath === "/index-el.html" ||
+    currentPath === "/index-it.html" ||
+    currentPath === "/index-de.html" ||
+    currentPath === "/index-fr.html" ||
     currentPath === "/pages/en.html" ||
     currentPath === "/pages/es.html" ||
     currentPath === "/pages/el.html" ||
+    currentPath === "/pages/it.html" ||
+    currentPath === "/pages/de.html" ||
+    currentPath === "/pages/fr.html" ||
     currentPath === `${preferredPath}/` ||
     window.location.hash === "#home";
 

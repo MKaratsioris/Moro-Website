@@ -24,6 +24,21 @@ to = "/pages/el.html"
 status = 200
 
 [[redirects]]
+from = "/index-it.html"
+to = "/pages/it.html"
+status = 200
+
+[[redirects]]
+from = "/index-de.html"
+to = "/pages/de.html"
+status = 200
+
+[[redirects]]
+from = "/index-fr.html"
+to = "/pages/fr.html"
+status = 200
+
+[[redirects]]
 from = "/en"
 to = "/pages/en.html"
 status = 200
@@ -66,6 +81,51 @@ status = 200
 [[redirects]]
 from = "/el/*"
 to = "/pages/el.html"
+status = 200
+
+[[redirects]]
+from = "/it"
+to = "/pages/it.html"
+status = 200
+
+[[redirects]]
+from = "/it/"
+to = "/pages/it.html"
+status = 200
+
+[[redirects]]
+from = "/it/*"
+to = "/pages/it.html"
+status = 200
+
+[[redirects]]
+from = "/de"
+to = "/pages/de.html"
+status = 200
+
+[[redirects]]
+from = "/de/"
+to = "/pages/de.html"
+status = 200
+
+[[redirects]]
+from = "/de/*"
+to = "/pages/de.html"
+status = 200
+
+[[redirects]]
+from = "/fr"
+to = "/pages/fr.html"
+status = 200
+
+[[redirects]]
+from = "/fr/"
+to = "/pages/fr.html"
+status = 200
+
+[[redirects]]
+from = "/fr/*"
+to = "/pages/fr.html"
 status = 200
 
 [[redirects]]

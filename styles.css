@@ -455,6 +455,18 @@ html[data-contrast="dark"] .language-menu.is-open .language-toggle {
     repeating-linear-gradient(180deg, #0d5eaf 0 11.111%, #ffffff 11.111% 22.222%);
 }
 
+.flag--italian {
+  background: linear-gradient(90deg, #009246 0 33.333%, #ffffff 33.333% 66.666%, #ce2b37 66.666%);
+}
+
+.flag--german {
+  background: linear-gradient(180deg, #000000 0 33.333%, #dd0000 33.333% 66.666%, #ffce00 66.666%);
+}
+
+.flag--french {
+  background: linear-gradient(90deg, #0055a4 0 33.333%, #ffffff 33.333% 66.666%, #ef4135 66.666%);
+}
+
 .language-options {
   position: absolute;
   top: calc(100% + 0.7rem);

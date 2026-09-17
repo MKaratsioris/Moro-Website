@@ -1,5 +1,5 @@
 [build]
-  command = ""
+  command = "node tools/update-media-manifest.js"
   publish = "."
 
 

@@ -22,7 +22,7 @@ $VideoRank = @{
 
 function Convert-ToWebPath {
   param([string] $Path)
-  return (Resolve-Path $Path).Path.Substring($Root.Path.Length + 1).Replace("\", "/")
+  return (Resolve-Path -LiteralPath $Path).Path.Substring($Root.Path.Length + 1).Replace("\", "/")
 }
 
 function Convert-ToTitle {

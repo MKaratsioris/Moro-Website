@@ -1,20 +1,8 @@
 ﻿window.MORAKI_MEDIA = {
     "hero":  [
                  {
-                     "src":  "video/hero/Clip155.mp4",
-                     "title":  "Clip 155",
-                     "type":  "video/mp4",
-                     "hasAudio":  true
-                 },
-                 {
-                     "src":  "video/hero/Clip156.mp4",
-                     "title":  "Clip 156",
-                     "type":  "video/mp4",
-                     "hasAudio":  true
-                 },
-                 {
-                     "src":  "video/hero/Clip157.mp4",
-                     "title":  "Clip 157",
+                     "src":  "video/hero/Alejandra Mantinan y Gabriel Misse - Pavadita.mp4",
+                     "title":  "Alejandra Mantinan y Gabriel Misse Pavadita",
                      "type":  "video/mp4",
                      "hasAudio":  true
                  }
@@ -167,23 +155,38 @@
                 ],
     "performances":  [
                          {
-                             "src":  "video/performances/Clip155.mp4",
-                             "title":  "Clip 155",
+                             "src":  "video/performances/Alejandra Mantinan y Aoniken Quiroga - Intimas [19.03.2019].mp4",
+                             "title":  "Alejandra Mantinan y Aoniken Quiroga Intimas [19.03.2019]",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Clip156.mp4",
-                             "title":  "Clip 156",
+                             "src":  "video/performances/Alejandra Mantinan y Aoniken Quiroga - Milonga [2012].mp4",
+                             "title":  "Alejandra Mantinan y Aoniken Quiroga Milonga [2012]",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Clip157.mp4",
-                             "title":  "Clip 157",
+                             "src":  "video/performances/Alejandra Mantinan y Gabriel Misse - Pavadita.mp4",
+                             "title":  "Alejandra Mantinan y Gabriel Misse Pavadita",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Clip158.mp4",
-                             "title":  "Clip 158",
+                             "src":  "video/performances/Alejandra Mantinan y Gustavo Russo - La luciernaga.mp4",
+                             "title":  "Alejandra Mantinan y Gustavo Russo La luciernaga",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Alejandra Mantinan y Gustavo Russo - Mala Junta.mp4",
+                             "title":  "Alejandra Mantinan y Gustavo Russo Mala Junta",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Alejandra Mantinan y Michalis Karatsioris - Tu palabras y la noche [03.2020].mp4",
+                             "title":  "Alejandra Mantinan y Michalis Karatsioris Tu palabras y la noche [03.2020]",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Alejandra Mantinan y Osvaldo Zotto - Jamas retornaras [2008].mp4",
+                             "title":  "Alejandra Mantinan y Osvaldo Zotto Jamas retornaras [2008]",
                              "type":  "video/mp4"
                          }
                      ]

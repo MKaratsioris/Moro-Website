@@ -2,6 +2,12 @@
   command = "node tools/update-media-manifest.js"
   publish = "."
 
+[[headers]]
+for = "/video/*"
+
+  [headers.values]
+  Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
 
 [[redirects]]
 from = "/"

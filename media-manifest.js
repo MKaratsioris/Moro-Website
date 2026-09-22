@@ -165,6 +165,16 @@
                              "type":  "video/mp4"
                          },
                          {
+                             "src":  "video/performances/Claudio Villagra - Embrujamiento.mp4",
+                             "title":  "Claudio Villagra - Embrujamiento",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Claudio Villagra - Viejo porton.mp4",
+                             "title":  "Claudio Villagra - Viejo porton",
+                             "type":  "video/mp4"
+                         },
+                         {
                              "src":  "video/performances/Gabriel Missè - A Orlando Goni.mp4",
                              "title":  "Gabriel Missè - A Orlando Goni",
                              "type":  "video/mp4"

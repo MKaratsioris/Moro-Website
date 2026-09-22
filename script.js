@@ -898,7 +898,46 @@ const initializePerformanceLightbox = () => {
 const loadPerformancePreview = (video) => {
   if (!video?.dataset.src || video.getAttribute("src")) return;
 
-  video.preload = "metadata";
+  const showDecodedPreviewFrame = () => {
+    if (!Number.isFinite(video.duration) || video.duration <= 0 || video.dataset.previewStarted) return;
+
+    // Metadata-only loading commonly leaves the video surface black. Seeking
+    // requests a useful frame; briefly playing the muted element also handles
+    // MP4s whose sparse keyframes make the browser snap the seek back to zero.
+    video.dataset.previewStarted = "true";
+    const previewTime = Math.min(5, Math.max(0.5, video.duration * 0.35));
+    video.dataset.previewTarget = previewTime.toFixed(3);
+    try {
+      video.currentTime = previewTime;
+    } catch {
+      // Older browsers may defer the seek until more media data is available.
+    }
+
+    let fallbackTimer;
+    const freezePreview = () => {
+      window.clearTimeout(fallbackTimer);
+      video.removeEventListener("timeupdate", freezeAtPreviewTime);
+      video.pause();
+      video.dataset.previewReady = "true";
+    };
+    const freezeAtPreviewTime = () => {
+      if (video.currentTime >= Math.min(previewTime + 0.1, video.duration - 0.05) || video.ended) {
+        freezePreview();
+      }
+    };
+
+    video.addEventListener("timeupdate", freezeAtPreviewTime);
+    fallbackTimer = window.setTimeout(freezePreview, 2500);
+    const playPromise = video.play();
+    if (playPromise?.catch) {
+      playPromise.catch(freezePreview);
+    }
+  };
+
+  video.addEventListener("loadedmetadata", showDecodedPreviewFrame, { once: true });
+  video.addEventListener("loadeddata", showDecodedPreviewFrame, { once: true });
+  video.addEventListener("canplay", showDecodedPreviewFrame, { once: true });
+  video.preload = "auto";
   video.src = video.dataset.src;
   video.load();
 };

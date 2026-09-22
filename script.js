@@ -50,9 +50,11 @@ let photoButtons = [];
 let currentPhotoIndex = 0;
 let currentGalleryPage = 0;
 let currentPerformanceIndex = 0;
+let performanceCarouselAnimating = false;
 const galleryPreviewCount = 5;
 const heroCrossfadeMs = 1400;
 const heroCrossfadeSeconds = heroCrossfadeMs / 1000;
+const performanceCarouselTransitionMs = 620;
 
 const savedContrast = localStorage.getItem("moraki-contrast");
 if (savedContrast === "dark") {
@@ -768,26 +770,8 @@ function renderPerformancePagination() {
 }
 
 function renderPerformanceControls() {
-  const hasMultipleVideos = mediaManifest.performances.length > 1;
-
-  if (performancePrev) {
-    performancePrev.disabled = !hasMultipleVideos;
-  }
-
-  if (performanceNext) {
-    performanceNext.disabled = !hasMultipleVideos;
-  }
-
   renderPerformancePagination();
 }
-
-const setPerformanceIndex = (index) => {
-  if (!mediaManifest.performances.length) return;
-
-  const total = mediaManifest.performances.length;
-  currentPerformanceIndex = (index + total) % total;
-  renderPerformances();
-};
 
 const stopRenderedPerformanceVideos = () => {
   performanceGrid?.querySelectorAll("video").forEach((video) => {
@@ -902,8 +886,93 @@ const createPerformanceCard = (item, index, position) => {
     card.append(label);
   }
 
-  card.addEventListener("click", () => openPerformanceVideo(index));
   return card;
+};
+
+const setPerformanceCardPosition = (card, position) => {
+  if (!card) return;
+
+  const index = Number(card.dataset.performanceIndex);
+  const item = mediaManifest.performances[index];
+  const title = item?.title || titleFromPath(item?.src || "");
+  card.className = `video-card performance-card performance-card--${position}`;
+  card.removeAttribute("aria-current");
+  card.querySelector(":scope > span")?.remove();
+
+  if (position === "current") {
+    const label = document.createElement("span");
+    label.textContent = title;
+    card.append(label);
+    card.setAttribute("aria-current", "true");
+    card.setAttribute("aria-label", `${labels.openMedia}: ${title}`);
+    return;
+  }
+
+  card.setAttribute("aria-label", title);
+};
+
+const rotatePerformanceCarousel = (step) => {
+  const total = mediaManifest.performances.length;
+  if (!performanceGrid || total < 2 || performanceCarouselAnimating) return;
+
+  if (total < 3) {
+    currentPerformanceIndex = (currentPerformanceIndex + step + total) % total;
+    renderPerformances();
+    return;
+  }
+
+  const currentCard = performanceGrid.querySelector(".performance-card--current");
+  const previousCard = performanceGrid.querySelector(".performance-card--previous");
+  const nextCard = performanceGrid.querySelector(".performance-card--next");
+  if (!currentCard || !previousCard || !nextCard) return;
+
+  performanceCarouselAnimating = true;
+  performanceGrid.classList.add("is-rotating");
+
+  const incomingIndex = step > 0
+    ? (currentPerformanceIndex + 2) % total
+    : (currentPerformanceIndex - 2 + total) % total;
+  const incomingPosition = step > 0 ? "incoming-next" : "incoming-previous";
+  const incomingCard = createPerformanceCard(
+    mediaManifest.performances[incomingIndex],
+    incomingIndex,
+    incomingPosition
+  );
+  performanceGrid.append(incomingCard);
+
+  // Commit the off-stage starting position before moving all four cards.
+  incomingCard.getBoundingClientRect();
+
+  window.requestAnimationFrame(() => {
+    currentPerformanceIndex = (currentPerformanceIndex + step + total) % total;
+
+    if (step > 0) {
+      setPerformanceCardPosition(previousCard, "exiting-previous");
+      setPerformanceCardPosition(currentCard, "previous");
+      setPerformanceCardPosition(nextCard, "current");
+      setPerformanceCardPosition(incomingCard, "next");
+    } else {
+      setPerformanceCardPosition(nextCard, "exiting-next");
+      setPerformanceCardPosition(currentCard, "next");
+      setPerformanceCardPosition(previousCard, "current");
+      setPerformanceCardPosition(incomingCard, "previous");
+    }
+
+    renderPerformancePagination();
+    const newCurrentCard = performanceGrid.querySelector(".performance-card--current");
+    const outgoingCard = step > 0 ? previousCard : nextCard;
+    const transitionDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? 0
+      : performanceCarouselTransitionMs;
+
+    window.setTimeout(() => {
+      outgoingCard.remove();
+      performanceGrid.classList.remove("is-rotating");
+      performanceCarouselAnimating = false;
+      newCurrentCard?.focus({ preventScroll: true });
+      scheduleSectionPathUpdate();
+    }, transitionDelay);
+  });
 };
 
 const renderPerformances = () => {
@@ -934,6 +1003,8 @@ const renderPerformances = () => {
   scheduleSectionPathUpdate();
 };
 
+performancePrev?.remove();
+performanceNext?.remove();
 initializePerformanceLightbox();
 initializeAboutTabs();
 initializeHeroPlaylist();
@@ -1027,17 +1098,33 @@ menuLinks.forEach((link) => {
 
 galleryPrev?.addEventListener("click", () => setGalleryPage(currentGalleryPage - 1));
 galleryNext?.addEventListener("click", () => setGalleryPage(currentGalleryPage + 1));
-performancePrev?.addEventListener("click", () => setPerformanceIndex(currentPerformanceIndex - 1));
-performanceNext?.addEventListener("click", () => setPerformanceIndex(currentPerformanceIndex + 1));
+performanceGrid?.addEventListener("click", (event) => {
+  const card = event.target.closest(".performance-card");
+  if (!card || performanceCarouselAnimating) return;
+
+  if (card.classList.contains("performance-card--previous")) {
+    rotatePerformanceCarousel(-1);
+    return;
+  }
+
+  if (card.classList.contains("performance-card--next")) {
+    rotatePerformanceCarousel(1);
+    return;
+  }
+
+  if (card.classList.contains("performance-card--current")) {
+    openPerformanceVideo(Number(card.dataset.performanceIndex));
+  }
+});
 performanceGrid?.addEventListener("keydown", (event) => {
   if (event.key === "ArrowLeft") {
     event.preventDefault();
-    setPerformanceIndex(currentPerformanceIndex - 1);
+    rotatePerformanceCarousel(-1);
   }
 
   if (event.key === "ArrowRight") {
     event.preventDefault();
-    setPerformanceIndex(currentPerformanceIndex + 1);
+    rotatePerformanceCarousel(1);
   }
 });
 heroAudioToggle?.addEventListener("click", () => {

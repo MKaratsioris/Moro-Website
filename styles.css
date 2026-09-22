@@ -2007,6 +2007,7 @@ body.past-hero .site-nav .nav-fade-item {
   position: relative;
   z-index: 1;
   background: #000000;
+  object-fit: contain;
 }
 
 .performance-card span {

@@ -36,6 +36,10 @@ const photoClose = document.querySelector("[data-photo-close]");
 const photoPrev = document.querySelector("[data-photo-prev]");
 const photoNext = document.querySelector("[data-photo-next]");
 const photoCount = document.querySelector("[data-photo-count]");
+let performanceLightbox;
+let performancePlayer;
+let performancePlayerTitle;
+let performancePlayerClose;
 let mediaManifest = window.MORAKI_MEDIA || { hero: [], gallery: [], performances: [] };
 let currentHeroVideoIndex = 0;
 let activeHeroVideoLayerIndex = 0;
@@ -767,11 +771,11 @@ function renderPerformanceControls() {
   const hasMultipleVideos = mediaManifest.performances.length > 1;
 
   if (performancePrev) {
-    performancePrev.disabled = !hasMultipleVideos || currentPerformanceIndex === 0;
+    performancePrev.disabled = !hasMultipleVideos;
   }
 
   if (performanceNext) {
-    performanceNext.disabled = !hasMultipleVideos || currentPerformanceIndex >= mediaManifest.performances.length - 1;
+    performanceNext.disabled = !hasMultipleVideos;
   }
 
   renderPerformancePagination();
@@ -780,7 +784,8 @@ function renderPerformanceControls() {
 const setPerformanceIndex = (index) => {
   if (!mediaManifest.performances.length) return;
 
-  currentPerformanceIndex = Math.min(Math.max(index, 0), mediaManifest.performances.length - 1);
+  const total = mediaManifest.performances.length;
+  currentPerformanceIndex = (index + total) % total;
   renderPerformances();
 };
 
@@ -788,6 +793,117 @@ const stopRenderedPerformanceVideos = () => {
   performanceGrid?.querySelectorAll("video").forEach((video) => {
     video.pause();
   });
+};
+
+const closePerformanceVideo = () => {
+  if (!performanceLightbox || !performancePlayer) return;
+
+  performancePlayer.pause();
+  performancePlayer.removeAttribute("src");
+  performancePlayer.querySelectorAll("source").forEach((source) => source.remove());
+  performancePlayer.load();
+  performanceLightbox.classList.remove("is-open");
+  performanceLightbox.setAttribute("aria-hidden", "true");
+
+  if (!menuPanel.classList.contains("is-open") && !photoLightbox.classList.contains("is-open")) {
+    body.classList.remove("menu-open");
+  }
+};
+
+const openPerformanceVideo = (index) => {
+  const item = mediaManifest.performances[index];
+  if (!item || !performanceLightbox || !performancePlayer) return;
+
+  const title = item.title || titleFromPath(item.src);
+  const source = document.createElement("source");
+  source.src = resolveSitePath(item.src);
+  source.type = item.type || videoTypeFromPath(item.src);
+
+  performancePlayer.innerHTML = "";
+  performancePlayer.append(source);
+  performancePlayerTitle.textContent = title;
+  performancePlayer.setAttribute("aria-label", title);
+  performanceLightbox.classList.add("is-open");
+  performanceLightbox.setAttribute("aria-hidden", "false");
+  body.classList.add("menu-open");
+  performancePlayer.load();
+  performancePlayer.play().catch(() => {
+    // Some browsers require a second explicit click before starting media.
+  });
+  performancePlayerClose.focus();
+};
+
+const initializePerformanceLightbox = () => {
+  performanceLightbox = document.createElement("div");
+  performanceLightbox.className = "performance-lightbox";
+  performanceLightbox.dataset.performanceLightbox = "";
+  performanceLightbox.setAttribute("aria-hidden", "true");
+  performanceLightbox.setAttribute("role", "dialog");
+  performanceLightbox.setAttribute("aria-modal", "true");
+
+  const frame = document.createElement("div");
+  frame.className = "performance-lightbox__frame";
+
+  performancePlayerClose = document.createElement("button");
+  performancePlayerClose.className = "performance-lightbox__close";
+  performancePlayerClose.type = "button";
+  performancePlayerClose.setAttribute("aria-label", "Close video");
+  performancePlayerClose.innerHTML = '<span aria-hidden="true"></span><span aria-hidden="true"></span>';
+
+  performancePlayerTitle = document.createElement("h2");
+  performancePlayerTitle.className = "performance-lightbox__title";
+
+  performancePlayer = document.createElement("video");
+  performancePlayer.className = "performance-lightbox__video";
+  performancePlayer.controls = true;
+  performancePlayer.preload = "metadata";
+  performancePlayer.playsInline = true;
+
+  frame.append(performancePlayerTitle, performancePlayer, performancePlayerClose);
+  performanceLightbox.append(frame);
+  body.append(performanceLightbox);
+
+  performancePlayerClose.addEventListener("click", closePerformanceVideo);
+  performanceLightbox.addEventListener("click", (event) => {
+    if (event.target === performanceLightbox) {
+      closePerformanceVideo();
+    }
+  });
+};
+
+const createPerformanceCard = (item, index, position) => {
+  const title = item.title || titleFromPath(item.src);
+  const card = document.createElement("button");
+  card.className = `video-card performance-card performance-card--${position}`;
+  card.type = "button";
+  card.dataset.performanceIndex = String(index);
+  card.setAttribute("aria-label", `${labels.openMedia}: ${title}`);
+
+  if (position === "current") {
+    card.setAttribute("aria-current", "true");
+  }
+
+  const video = document.createElement("video");
+  video.muted = true;
+  video.preload = "metadata";
+  video.playsInline = true;
+  video.tabIndex = -1;
+  video.setAttribute("aria-hidden", "true");
+
+  const source = document.createElement("source");
+  source.src = resolveSitePath(item.src);
+  source.type = item.type || videoTypeFromPath(item.src);
+  video.append(source);
+  card.append(video);
+
+  if (position === "current") {
+    const label = document.createElement("span");
+    label.textContent = title;
+    card.append(label);
+  }
+
+  card.addEventListener("click", () => openPerformanceVideo(index));
+  return card;
 };
 
 const renderPerformances = () => {
@@ -801,30 +917,24 @@ const renderPerformances = () => {
   }
 
   currentPerformanceIndex = Math.min(currentPerformanceIndex, mediaManifest.performances.length - 1);
-  const item = mediaManifest.performances[currentPerformanceIndex];
-  const card = document.createElement("article");
-  card.className = "video-card performance-card";
+  const total = mediaManifest.performances.length;
+  const visibleCards = total === 1
+    ? [{ index: currentPerformanceIndex, position: "current" }]
+    : [
+        { index: (currentPerformanceIndex - 1 + total) % total, position: "previous" },
+        { index: (currentPerformanceIndex + 1) % total, position: "next" },
+        { index: currentPerformanceIndex, position: "current" },
+      ];
 
-  const video = document.createElement("video");
-  video.controls = true;
-  video.preload = "metadata";
-  video.playsInline = true;
-
-  const source = document.createElement("source");
-  source.src = resolveSitePath(item.src);
-  source.type = item.type || videoTypeFromPath(item.src);
-  video.append(source);
-
-  const label = document.createElement("span");
-  label.textContent = item.title || titleFromPath(item.src);
-
-  card.append(video, label);
-  performanceGrid.append(card);
+  visibleCards.forEach(({ index, position }) => {
+    performanceGrid.append(createPerformanceCard(mediaManifest.performances[index], index, position));
+  });
 
   renderPerformanceControls();
   scheduleSectionPathUpdate();
 };
 
+initializePerformanceLightbox();
 initializeAboutTabs();
 initializeHeroPlaylist();
 renderGallery();
@@ -870,7 +980,7 @@ const setMenu = (open) => {
     menuPanel.classList.add("is-closing");
     window.setTimeout(() => {
       menuPanel.classList.remove("is-closing");
-      if (!photoLightbox.classList.contains("is-open")) {
+      if (!photoLightbox.classList.contains("is-open") && !performanceLightbox?.classList.contains("is-open")) {
         body.classList.remove("menu-open");
       }
     }, 650);
@@ -919,6 +1029,17 @@ galleryPrev?.addEventListener("click", () => setGalleryPage(currentGalleryPage -
 galleryNext?.addEventListener("click", () => setGalleryPage(currentGalleryPage + 1));
 performancePrev?.addEventListener("click", () => setPerformanceIndex(currentPerformanceIndex - 1));
 performanceNext?.addEventListener("click", () => setPerformanceIndex(currentPerformanceIndex + 1));
+performanceGrid?.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    setPerformanceIndex(currentPerformanceIndex - 1);
+  }
+
+  if (event.key === "ArrowRight") {
+    event.preventDefault();
+    setPerformanceIndex(currentPerformanceIndex + 1);
+  }
+});
 heroAudioToggle?.addEventListener("click", () => {
   const shouldMute = !heroAudioMuted;
   setHeroAudioMuted(shouldMute);
@@ -980,6 +1101,7 @@ window.addEventListener("keydown", (event) => {
     setMenu(false);
     setLanguageMenu(false);
     closePhoto();
+    closePerformanceVideo();
   }
 
   if (!photoLightbox.classList.contains("is-open")) return;
@@ -1024,7 +1146,7 @@ function closePhoto() {
   photoPreview.removeAttribute("src");
   photoPreview.alt = "";
   photoCount.textContent = "";
-  if (!menuPanel.classList.contains("is-open")) {
+  if (!menuPanel.classList.contains("is-open") && !performanceLightbox?.classList.contains("is-open")) {
     body.classList.remove("menu-open");
   }
 }

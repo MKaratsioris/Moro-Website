@@ -28,10 +28,37 @@ function Convert-ToWebPath {
 function Convert-ToTitle {
   param([string] $Name)
   $BaseName = [System.IO.Path]::GetFileNameWithoutExtension($Name)
-  $BaseName = $BaseName -replace "[-_]+", " "
+  $BaseName = $BaseName -replace "_+", " "
   $BaseName = $BaseName -replace "([a-z])([0-9])", '$1 $2'
   $BaseName = $BaseName -replace "\s+", " "
   return $BaseName.Trim()
+}
+
+function Get-ExistingMediaTitles {
+  $Titles = @{}
+  $ManifestPath = Join-Path $Root "media-manifest.js"
+  if (-not (Test-Path -LiteralPath $ManifestPath)) {
+    return $Titles
+  }
+
+  try {
+    $Content = Get-Content -LiteralPath $ManifestPath -Raw
+    $Match = [regex]::Match($Content, 'window\.MORAKI_MEDIA\s*=\s*([\s\S]*?);\s*$')
+    if (-not $Match.Success) {
+      return $Titles
+    }
+
+    $ExistingManifest = $Match.Groups[1].Value | ConvertFrom-Json
+    (@($ExistingManifest.hero) + @($ExistingManifest.performances)) | ForEach-Object {
+      if ($null -ne $_ -and -not [string]::IsNullOrWhiteSpace($_.src) -and $null -ne $_.title) {
+        $Titles[[string]$_.src] = [string]$_.title
+      }
+    }
+  } catch {
+    Write-Warning "Could not read existing media titles: $($_.Exception.Message)"
+  }
+
+  return $Titles
 }
 
 function Get-MediaFiles {
@@ -103,12 +130,14 @@ function Test-VideoHasAudio {
 
 function Update-MediaManifest {
   Convert-PerformanceVideos
+  $ExistingTitles = Get-ExistingMediaTitles
 
   $Hero = @(Select-PreferredVideos (Get-MediaFiles -Folder "video\hero" -Extensions $VideoExtensions) | ForEach-Object {
     $Extension = $_.Extension.ToLowerInvariant()
+    $Src = Convert-ToWebPath $_.FullName
     [ordered]@{
-      src = Convert-ToWebPath $_.FullName
-      title = Convert-ToTitle $_.Name
+      src = $Src
+      title = if ($ExistingTitles.ContainsKey($Src)) { $ExistingTitles[$Src] } else { Convert-ToTitle $_.Name }
       type = $VideoTypes[$Extension]
       hasAudio = Test-VideoHasAudio $_.FullName
     }
@@ -125,9 +154,10 @@ function Update-MediaManifest {
 
   $Performances = @($PerformanceFiles | ForEach-Object {
     $Extension = $_.Extension.ToLowerInvariant()
+    $Src = Convert-ToWebPath $_.FullName
     [ordered]@{
-      src = Convert-ToWebPath $_.FullName
-      title = Convert-ToTitle $_.Name
+      src = $Src
+      title = if ($ExistingTitles.ContainsKey($Src)) { $ExistingTitles[$Src] } else { Convert-ToTitle $_.Name }
       type = $VideoTypes[$Extension]
     }
   })

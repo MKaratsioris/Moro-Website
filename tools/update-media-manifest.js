@@ -3,6 +3,7 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 
 const root = path.resolve(__dirname, "..");
+const manifestPath = path.join(root, "media-manifest.js");
 const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 const videoExtensions = new Set([".mp4", ".m4v", ".mov", ".webm", ".ogv"]);
 
@@ -27,10 +28,32 @@ const toWebPath = (absolutePath) => path.relative(root, absolutePath).split(path
 const titleFromFile = (fileName) =>
   path
     .basename(fileName, path.extname(fileName))
-    .replace(/[-_]+/g, " ")
+    .replace(/_+/g, " ")
     .replace(/([a-z])([0-9])/gi, "$1 $2")
     .replace(/\s+/g, " ")
     .trim();
+
+const readExistingManifest = () => {
+  try {
+    const text = fs.readFileSync(manifestPath, "utf8");
+    const match = text.match(/window\.MORAKI_MEDIA\s*=\s*([\s\S]*?);\s*$/);
+    return match ? JSON.parse(match[1]) : {};
+  } catch {
+    return {};
+  }
+};
+
+const existingManifest = readExistingManifest();
+const existingTitles = new Map(
+  [...(existingManifest.hero || []), ...(existingManifest.performances || [])]
+    .filter((item) => item?.src && typeof item.title === "string")
+    .map((item) => [item.src, item.title])
+);
+
+const mediaTitle = (absolutePath) => {
+  const src = toWebPath(absolutePath);
+  return existingTitles.has(src) ? existingTitles.get(src) : titleFromFile(absolutePath);
+};
 
 const readFolder = (folder, extensions) => {
   const absoluteFolder = path.join(root, folder);
@@ -140,7 +163,7 @@ const performances = preferWebVideos(readFolder(path.join("video", "performances
   const extension = path.extname(absolutePath).toLowerCase();
   return {
     src: toWebPath(absolutePath),
-    title: titleFromFile(absolutePath),
+    title: mediaTitle(absolutePath),
     type: videoTypes[extension] || "",
   };
 });
@@ -149,14 +172,14 @@ const hero = preferWebVideos(readFolder(path.join("video", "hero"), videoExtensi
   const extension = path.extname(absolutePath).toLowerCase();
   return {
     src: toWebPath(absolutePath),
-    title: titleFromFile(absolutePath),
+    title: mediaTitle(absolutePath),
     type: videoTypes[extension] || "",
     hasAudio: hasAudioStream(absolutePath),
   };
 });
 
 const output = `window.MORAKI_MEDIA = ${JSON.stringify({ hero, gallery, performances }, null, 2)};\n`;
-fs.writeFileSync(path.join(root, "media-manifest.js"), output, "utf8");
+fs.writeFileSync(manifestPath, output, "utf8");
 
 console.log(
   `Wrote media-manifest.js with ${hero.length} hero video(s), ${gallery.length} gallery item(s), and ${performances.length} performance item(s).`

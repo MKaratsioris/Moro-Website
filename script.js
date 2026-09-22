@@ -489,6 +489,9 @@ const videoTypeFromPath = (src) => {
   return types[extension] || "";
 };
 
+const manifestTitle = (item) =>
+  typeof item?.title === "string" ? item.title : titleFromPath(item?.src || "");
+
 const getHeroVideos = () => {
   const manifestVideos = Array.isArray(mediaManifest.hero) ? mediaManifest.hero : [];
   let videos = [];
@@ -835,7 +838,7 @@ const openPerformanceVideo = (index) => {
     setHeroAudioMuted(true);
   }
 
-  const title = item.title || titleFromPath(item.src);
+  const title = manifestTitle(item);
   const source = document.createElement("source");
   source.src = resolveSitePath(item.src);
   source.type = item.type || videoTypeFromPath(item.src);
@@ -933,7 +936,7 @@ const initializePerformancePreviewLoading = () => {
 };
 
 const createPerformanceCard = (item, index, position) => {
-  const title = item.title || titleFromPath(item.src);
+  const title = manifestTitle(item);
   const card = document.createElement("button");
   card.className = `video-card performance-card performance-card--${position}`;
   card.type = "button";
@@ -971,7 +974,7 @@ const setPerformanceCardPosition = (card, position) => {
 
   const index = Number(card.dataset.performanceIndex);
   const item = mediaManifest.performances[index];
-  const title = item?.title || titleFromPath(item?.src || "");
+  const title = manifestTitle(item);
   card.className = `video-card performance-card performance-card--${position}`;
   card.removeAttribute("aria-current");
   card.querySelector(":scope > span")?.remove();

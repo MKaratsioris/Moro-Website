@@ -1,8 +1,8 @@
 ﻿window.MORAKI_MEDIA = {
     "hero":  [
                  {
-                     "src":  "video/hero/Alejandra Mantinan y Gabriel Misse - Pavadita.mp4",
-                     "title":  "Alejandra Mantinan y Gabriel Misse Pavadita",
+                     "src":  "video/hero/Gabriel Missè - Pavadita.mp4",
+                     "title":  "Gabriel Missè - Pavadita",
                      "type":  "video/mp4",
                      "hasAudio":  true
                  }
@@ -155,38 +155,118 @@
                 ],
     "performances":  [
                          {
-                             "src":  "video/performances/Alejandra Mantinan y Aoniken Quiroga - Intimas [19.03.2019].mp4",
-                             "title":  "Alejandra Mantinan y Aoniken Quiroga Intimas [19.03.2019]",
+                             "src":  "video/performances/Aoniken Quiroga - Intimas.mp4",
+                             "title":  "Aoniken Quiroga - Intimas",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Alejandra Mantinan y Aoniken Quiroga - Milonga [2012].mp4",
-                             "title":  "Alejandra Mantinan y Aoniken Quiroga Milonga [2012]",
+                             "src":  "video/performances/Aoniken Quiroga - Parque Patricios.mp4",
+                             "title":  "Aoniken Quiroga - Parque Patricios",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Alejandra Mantinan y Gabriel Misse - Pavadita.mp4",
-                             "title":  "Alejandra Mantinan y Gabriel Misse Pavadita",
+                             "src":  "video/performances/Gabriel Missè - A Orlando Goni.mp4",
+                             "title":  "Gabriel Missè - A Orlando Goni",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Alejandra Mantinan y Gustavo Russo - La luciernaga.mp4",
-                             "title":  "Alejandra Mantinan y Gustavo Russo La luciernaga",
+                             "src":  "video/performances/Gabriel Missè - Pavadita.mp4",
+                             "title":  "Gabriel Missè - Pavadita",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Alejandra Mantinan y Gustavo Russo - Mala Junta.mp4",
-                             "title":  "Alejandra Mantinan y Gustavo Russo Mala Junta",
+                             "src":  "video/performances/Gaspar Godoy - Embrujamiento.mp4",
+                             "title":  "Gaspar Godoy - Embrujamiento",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Alejandra Mantinan y Michalis Karatsioris - Tu palabras y la noche [03.2020].mp4",
-                             "title":  "Alejandra Mantinan y Michalis Karatsioris Tu palabras y la noche [03.2020]",
+                             "src":  "video/performances/Gregorio Garrido - Café Dominguez.mp4",
+                             "title":  "Gregorio Garrido - Café Dominguez",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Alejandra Mantinan y Osvaldo Zotto - Jamas retornaras [2008].mp4",
-                             "title":  "Alejandra Mantinan y Osvaldo Zotto Jamas retornaras [2008]",
+                             "src":  "video/performances/Gregorio Garrido - Gallo ciego.mp4",
+                             "title":  "Gregorio Garrido - Gallo ciego",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Gustavo Russo - La luciernaga.mp4",
+                             "title":  "Gustavo Russo - La luciernaga",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Gustavo Russo - Mala Junta.mp4",
+                             "title":  "Gustavo Russo - Mala Junta",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Horacio Godoy - La Muchachada del Centro.mp4",
+                             "title":  "Horacio Godoy - La Muchachada del Centro",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Horacio Godoy - Mano a mano.mp4",
+                             "title":  "Horacio Godoy - Mano a mano",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Javier Rodriguez - Te aconsejo que me olvides.mp4",
+                             "title":  "Javier Rodriguez - Te aconsejo que me olvides",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Javier Rodriguez - Yo te bendigo.mp4",
+                             "title":  "Javier Rodriguez - Yo te bendigo",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Jorge Garcia - Milonga del Recuerdo.mp4",
+                             "title":  "Jorge Garcia - Milonga del Recuerdo",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Martin Ojeda - El puntazo.mp4",
+                             "title":  "Martin Ojeda - El puntazo",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Martin Ojeda - Mi dolor.mp4",
+                             "title":  "Martin Ojeda - Mi dolor",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Michalis Karatsioris - Discos de Gardel.mp4",
+                             "title":  "Michalis Karatsioris - Discos de Gardel",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Michalis Karatsioris - Tu palabras y la noche.mp4",
+                             "title":  "Michalis Karatsioris - Tu palabras y la noche",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Osvaldo Zotto - Jamas retornaras.mp4",
+                             "title":  "Osvaldo Zotto - Jamas retornaras",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Osvaldo Zotto - Mi novia de ayer.mp4",
+                             "title":  "Osvaldo Zotto - Mi novia de ayer",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Pancho Martinez Pey - Campo afuera.mp4",
+                             "title":  "Pancho Martinez Pey - Campo afuera",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Pancho Martinez Pey - Loca.mp4",
+                             "title":  "Pancho Martinez Pey - Loca",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Sebastian Achaval - Mi dolor.mp4",
+                             "title":  "Sebastian Achaval - Mi dolor",
                              "type":  "video/mp4"
                          }
                      ]

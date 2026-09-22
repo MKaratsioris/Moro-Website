@@ -210,16 +210,6 @@
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Javier Rodriguez - Te aconsejo que me olvides.mp4",
-                             "title":  "Javier Rodriguez - Te aconsejo que me olvides",
-                             "type":  "video/mp4"
-                         },
-                         {
-                             "src":  "video/performances/Javier Rodriguez - Yo te bendigo.mp4",
-                             "title":  "Javier Rodriguez - Yo te bendigo",
-                             "type":  "video/mp4"
-                         },
-                         {
                              "src":  "video/performances/Jorge Garcia - Milonga del Recuerdo.mp4",
                              "title":  "Jorge Garcia - Milonga del Recuerdo",
                              "type":  "video/mp4"

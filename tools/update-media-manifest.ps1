@@ -34,6 +34,16 @@ function Convert-ToTitle {
   return $BaseName.Trim()
 }
 
+function Get-PerformancePoster {
+  param([System.IO.FileInfo] $Video)
+
+  $PosterPath = Join-Path $Root "assets\performance-posters\$($Video.BaseName).png"
+  if (Test-Path -LiteralPath $PosterPath) {
+    return Convert-ToWebPath $PosterPath
+  }
+  return ""
+}
+
 function Get-ExistingMediaTitles {
   $Titles = @{}
   $ManifestPath = Join-Path $Root "media-manifest.js"
@@ -159,6 +169,7 @@ function Update-MediaManifest {
       src = $Src
       title = if ($ExistingTitles.ContainsKey($Src)) { $ExistingTitles[$Src] } else { Convert-ToTitle $_.Name }
       type = $VideoTypes[$Extension]
+      poster = Get-PerformancePoster $_
     }
   })
 

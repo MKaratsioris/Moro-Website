@@ -904,7 +904,11 @@ const renderPerformancePlaylist = (selectedIndex) => {
     preview.playsInline = true;
     preview.tabIndex = -1;
     preview.setAttribute("aria-hidden", "true");
-    preview.dataset.src = resolveSitePath(item.src);
+    if (item.poster) {
+      preview.poster = resolveSitePath(item.poster);
+    } else {
+      preview.dataset.src = resolveSitePath(item.src);
+    }
 
     const label = document.createElement("span");
     label.textContent = title;
@@ -1114,7 +1118,11 @@ const createPerformanceCard = (item, index, position) => {
   video.playsInline = true;
   video.tabIndex = -1;
   video.setAttribute("aria-hidden", "true");
-  video.dataset.src = resolveSitePath(item.src);
+  if (item.poster) {
+    video.poster = resolveSitePath(item.poster);
+  } else {
+    video.dataset.src = resolveSitePath(item.src);
+  }
   card.append(video);
 
   if (performancePreviewsEnabled) {

@@ -55,6 +55,16 @@ const mediaTitle = (absolutePath) => {
   return existingTitles.has(src) ? existingTitles.get(src) : titleFromFile(absolutePath);
 };
 
+const performancePoster = (absolutePath) => {
+  const posterPath = path.join(
+    root,
+    "assets",
+    "performance-posters",
+    `${path.basename(absolutePath, path.extname(absolutePath))}.png`
+  );
+  return fs.existsSync(posterPath) ? toWebPath(posterPath) : "";
+};
+
 const readFolder = (folder, extensions) => {
   const absoluteFolder = path.join(root, folder);
   if (!fs.existsSync(absoluteFolder)) return [];
@@ -165,6 +175,7 @@ const performances = preferWebVideos(readFolder(path.join("video", "performances
     src: toWebPath(absolutePath),
     title: mediaTitle(absolutePath),
     type: videoTypes[extension] || "",
+    poster: performancePoster(absolutePath),
   };
 });
 

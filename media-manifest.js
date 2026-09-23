@@ -175,6 +175,16 @@
                              "type":  "video/mp4"
                          },
                          {
+                             "src":  "video/performances/Fabian Peralta - Bomboncito.mp4",
+                             "title":  "Fabian Peralta - Bomboncito",
+                             "type":  "video/mp4"
+                         },
+                         {
+                             "src":  "video/performances/Fabian Peralta - La bruja.mp4",
+                             "title":  "Fabian Peralta - La bruja",
+                             "type":  "video/mp4"
+                         },
+                         {
                              "src":  "video/performances/Gabriel Missè - A Orlando Goni.mp4",
                              "title":  "Gabriel Missè - A Orlando Goni",
                              "type":  "video/mp4"

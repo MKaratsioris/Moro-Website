@@ -175,13 +175,13 @@
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Fabian Peralta - Bomboncito.mp4",
-                             "title":  "Fabian Peralta - Bomboncito",
+                             "src":  "video/performances/Fabián Peralta - Bomboncito.mp4",
+                             "title":  "Fabián Peralta - Bomboncito",
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Fabian Peralta - La bruja.mp4",
-                             "title":  "Fabian Peralta - La bruja",
+                             "src":  "video/performances/Fabián Peralta - La bruja.mp4",
+                             "title":  "Fabián Peralta - La bruja",
                              "type":  "video/mp4"
                          },
                          {
@@ -275,8 +275,8 @@
                              "type":  "video/mp4"
                          },
                          {
-                             "src":  "video/performances/Sebastian Achaval - Mi dolor.mp4",
-                             "title":  "Sebastian Achaval - Mi dolor",
+                             "src":  "video/performances/Sebastián Achaval - Mi dolor.mp4",
+                             "title":  "Sebastián Achaval - Mi dolor",
                              "type":  "video/mp4"
                          }
                      ]

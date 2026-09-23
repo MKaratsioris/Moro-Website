@@ -40,6 +40,8 @@ let performanceLightbox;
 let performancePlayer;
 let performancePlayerTitle;
 let performancePlayerClose;
+let performancePlaylist;
+let performancePlaylistPreviewObserver;
 let mediaManifest = window.MORAKI_MEDIA || { hero: [], gallery: [], performances: [] };
 let currentHeroVideoIndex = 0;
 let activeHeroVideoLayerIndex = 0;
@@ -51,6 +53,7 @@ let photoButtons = [];
 let currentPhotoIndex = 0;
 let currentGalleryPage = 0;
 let currentPerformanceIndex = 0;
+let currentPerformanceVideoIndex = 0;
 let performanceCarouselAnimating = false;
 let performancePreviewsEnabled = false;
 let performancePreviewObserver;
@@ -808,6 +811,16 @@ const closePerformanceVideo = () => {
   if (!performanceLightbox || !performancePlayer) return;
 
   const wasOpen = performanceLightbox.classList.contains("is-open");
+  performancePlaylistPreviewObserver?.disconnect();
+  performancePlaylistPreviewObserver = undefined;
+  performancePlaylist?.querySelectorAll("video").forEach((video) => {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+  });
+  if (performancePlaylist) {
+    performancePlaylist.innerHTML = "";
+  }
   performancePlayer.pause();
   performancePlayer.removeAttribute("src");
   performancePlayer.querySelectorAll("source").forEach((source) => source.remove());
@@ -829,6 +842,113 @@ const closePerformanceVideo = () => {
   }
 };
 
+const setPerformancePlaylistSelection = (index, shouldScroll = true, shouldAnimate = true) => {
+  if (!performancePlaylist) return;
+
+  const selectedItem = performancePlaylist.querySelector(`[data-performance-playlist-index="${index}"]`);
+  performancePlaylist.querySelectorAll(".performance-lightbox__playlist-item").forEach((item) => {
+    const isSelected = item === selectedItem;
+    item.classList.toggle("is-active", isSelected);
+    item.setAttribute("aria-selected", String(isSelected));
+  });
+
+  if (shouldScroll && selectedItem) {
+    performancePlaylist.scrollTo({
+      top: selectedItem.offsetTop - performancePlaylist.offsetTop,
+      behavior: shouldAnimate ? "smooth" : "auto",
+    });
+  }
+};
+
+const setPerformancePlayer = (index, shouldScroll = true) => {
+  const item = mediaManifest.performances[index];
+  if (!item || !performanceLightbox || !performancePlayer) return;
+
+  currentPerformanceVideoIndex = index;
+  const title = manifestTitle(item);
+  const source = document.createElement("source");
+  source.src = resolveSitePath(item.src);
+  source.type = item.type || videoTypeFromPath(item.src);
+
+  performancePlayer.pause();
+  performancePlayer.innerHTML = "";
+  performancePlayer.append(source);
+  performancePlayerTitle.textContent = title;
+  performancePlayer.setAttribute("aria-label", title);
+  setPerformancePlaylistSelection(index, shouldScroll);
+  performancePlayer.load();
+  performancePlayer.play().catch(() => {
+    // Some browsers require a second explicit click before starting media.
+  });
+};
+
+const renderPerformancePlaylist = (selectedIndex) => {
+  if (!performancePlaylist) return;
+
+  performancePlaylistPreviewObserver?.disconnect();
+  performancePlaylist.innerHTML = "";
+
+  mediaManifest.performances.forEach((item, index) => {
+    const title = manifestTitle(item);
+    const listItem = document.createElement("div");
+    listItem.className = "performance-lightbox__playlist-item";
+    listItem.dataset.performancePlaylistIndex = String(index);
+    listItem.setAttribute("role", "option");
+    listItem.setAttribute("aria-label", `${labels.openMedia}: ${title}`);
+    listItem.setAttribute("aria-selected", String(index === selectedIndex));
+    listItem.tabIndex = 0;
+
+    const preview = document.createElement("video");
+    preview.muted = true;
+    preview.preload = "none";
+    preview.playsInline = true;
+    preview.tabIndex = -1;
+    preview.setAttribute("aria-hidden", "true");
+    preview.dataset.src = resolveSitePath(item.src);
+
+    const label = document.createElement("span");
+    label.textContent = title;
+    listItem.append(preview, label);
+
+    const selectPerformance = () => {
+      if (index === currentPerformanceVideoIndex) {
+        setPerformancePlaylistSelection(index);
+        return;
+      }
+      setPerformancePlayer(index);
+    };
+
+    listItem.addEventListener("click", selectPerformance);
+    listItem.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        selectPerformance();
+      }
+    });
+    performancePlaylist.append(listItem);
+  });
+
+  if ("IntersectionObserver" in window) {
+    performancePlaylistPreviewObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          loadPerformancePreview(entry.target);
+          performancePlaylistPreviewObserver?.unobserve(entry.target);
+        });
+      },
+      { root: performancePlaylist, rootMargin: "220px 0px" }
+    );
+    performancePlaylist.querySelectorAll("video[data-src]").forEach((video) => {
+      performancePlaylistPreviewObserver.observe(video);
+    });
+  } else {
+    performancePlaylist.querySelectorAll("video[data-src]").forEach(loadPerformancePreview);
+  }
+
+  setPerformancePlaylistSelection(selectedIndex, false);
+};
+
 const openPerformanceVideo = (index) => {
   const item = mediaManifest.performances[index];
   if (!item || !performanceLightbox || !performancePlayer) return;
@@ -838,21 +958,14 @@ const openPerformanceVideo = (index) => {
     setHeroAudioMuted(true);
   }
 
-  const title = manifestTitle(item);
-  const source = document.createElement("source");
-  source.src = resolveSitePath(item.src);
-  source.type = item.type || videoTypeFromPath(item.src);
-
-  performancePlayer.innerHTML = "";
-  performancePlayer.append(source);
-  performancePlayerTitle.textContent = title;
-  performancePlayer.setAttribute("aria-label", title);
+  currentPerformanceVideoIndex = index;
+  renderPerformancePlaylist(index);
   performanceLightbox.classList.add("is-open");
   performanceLightbox.setAttribute("aria-hidden", "false");
   body.classList.add("menu-open");
-  performancePlayer.load();
-  performancePlayer.play().catch(() => {
-    // Some browsers require a second explicit click before starting media.
+  setPerformancePlayer(index, false);
+  window.requestAnimationFrame(() => {
+    setPerformancePlaylistSelection(index, true, false);
   });
   performancePlayerClose.focus();
 };
@@ -867,6 +980,9 @@ const initializePerformanceLightbox = () => {
 
   const frame = document.createElement("div");
   frame.className = "performance-lightbox__frame";
+
+  const content = document.createElement("div");
+  content.className = "performance-lightbox__content";
 
   performancePlayerClose = document.createElement("button");
   performancePlayerClose.className = "performance-lightbox__close";
@@ -883,7 +999,13 @@ const initializePerformanceLightbox = () => {
   performancePlayer.preload = "auto";
   performancePlayer.playsInline = true;
 
-  frame.append(performancePlayerTitle, performancePlayer, performancePlayerClose);
+  performancePlaylist = document.createElement("div");
+  performancePlaylist.className = "performance-lightbox__playlist";
+  performancePlaylist.setAttribute("role", "listbox");
+  performancePlaylist.setAttribute("aria-label", "All performances");
+
+  content.append(performancePlayer, performancePlaylist);
+  frame.append(performancePlayerTitle, content, performancePlayerClose);
   performanceLightbox.append(frame);
   body.append(performanceLightbox);
 

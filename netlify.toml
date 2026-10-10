@@ -338,3 +338,6 @@ status = 200
 from = "/*"
 to = "/pages/en.html"
 status = 200
+
+[functions]
+  included_files = ["media-manifest.js"]

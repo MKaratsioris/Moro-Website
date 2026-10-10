@@ -28,8 +28,12 @@ const performancePrev = document.querySelector("[data-performance-prev]");
 const performanceNext = document.querySelector("[data-performance-next]");
 const performancePagination = document.querySelector("[data-performance-pagination]");
 const scheduleList = document.querySelector(".schedule-list");
-const visitorCounter = document.querySelector("[data-visitor-counter]");
-const visitorCount = document.querySelector("[data-visitor-count]");
+const visitorCounter = document.createElement("div");
+visitorCounter.className = "hero-viewers";
+visitorCounter.setAttribute("role", "status");
+visitorCounter.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg><b data-visitor-count>—</b>`;
+body.append(visitorCounter);
+const visitorCount = visitorCounter.querySelector("[data-visitor-count]");
 const photoLightbox = document.querySelector("[data-photo-lightbox]");
 const photoPreview = document.querySelector("[data-photo-preview]");
 const photoClose = document.querySelector("[data-photo-close]");
@@ -284,50 +288,65 @@ const resolveSitePath = (src) => {
   return `/${src}`;
 };
 
-const updateVisitorCounter = async () => {
-  if (!visitorCounter || !visitorCount) return;
-
-  const formatCount = (count) => new Intl.NumberFormat(pageLanguage).format(count);
-  const localCount = () => {
-    const countKey = "alejandra-local-visitor-count";
-    const sessionKey = "alejandra-local-visitor-counted";
-
-    try {
-      const storedCount = Number(localStorage.getItem(countKey)) || 0;
-      const shouldCountVisit = !sessionStorage.getItem(sessionKey);
-      const nextCount = shouldCountVisit ? storedCount + 1 : Math.max(storedCount, 1);
-
-      if (shouldCountVisit) {
-        localStorage.setItem(countKey, String(nextCount));
-        sessionStorage.setItem(sessionKey, "true");
-      }
-
-      return nextCount;
-    } catch {
-      return 1;
-    }
-  };
-
-  const endpoint = visitorCounter.dataset.visitorEndpoint;
-  let count;
-
-  if (endpoint && /^https?:$/.test(window.location.protocol)) {
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { Accept: "application/json" },
-      });
-      const data = response.ok ? await response.json() : {};
-      count = Number(data.count);
-    } catch {
-      count = undefined;
-    }
+const viewCounts = new Map();
+const eyeMarkup = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+const countFormat = new Intl.NumberFormat(pageLanguage);
+const counterRequest = async (key, increment = false) => {
+  // File/localhost previews retain counts locally; production uses shared storage.
+  const preview = location.protocol === 'file:' || ['localhost', '127.0.0.1'].includes(location.hostname);
+  if (preview) {
+    const storageKey = 'moraki-preview-count:' + key;
+    let count = viewCounts.get(key);
+    try { count = Number(localStorage.getItem(storageKey)) || count; } catch {}
+    if (!count) count = key === 'visitors' ? 3696 + Math.floor(Math.random() * 5941) : 369 + Math.floor(Math.random() * 595);
+    if (increment) count++;
+    try { localStorage.setItem(storageKey, String(count)); } catch {}
+    return count;
   }
-
-  visitorCount.textContent = formatCount(Number.isFinite(count) ? count : localCount());
+  const response = await fetch('/.netlify/functions/counters', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ key, increment }),
+  });
+  if (!response.ok) throw new Error('Counter unavailable');
+  return (await response.json()).count;
 };
-
-updateVisitorCounter();
+const refreshCount = (key, count) => {
+  viewCounts.set(key, Math.max(viewCounts.get(key) || 0, count));
+  document.querySelectorAll('[data-view-key]').forEach(node => {
+    if (node.dataset.viewKey !== key) return;
+    node.querySelector('b').textContent = countFormat.format(viewCounts.get(key));
+    node.setAttribute('aria-label', countFormat.format(viewCounts.get(key)) + ' views');
+  });
+};
+const countVideoClick = (item) => {
+  const key = 'video:' + item.src;
+  counterRequest(key, true).then(count => refreshCount(key, count)).catch(() => {});
+};
+const createPerformanceLabel = (item) => {
+  const label = document.createElement('span');
+  label.className = 'performance-caption';
+  const title = document.createElement('strong');
+  title.textContent = manifestTitle(item);
+  const count = document.createElement('small');
+  count.className = 'view-count';
+  count.dataset.viewKey = 'video:' + item.src;
+  count.innerHTML = eyeMarkup + '<b>—</b>';
+  label.append(title, count);
+  const key = count.dataset.viewKey;
+  if (viewCounts.has(key)) count.querySelector('b').textContent = countFormat.format(viewCounts.get(key));
+  else counterRequest(key).then(value => refreshCount(key, value)).catch(() => {});
+  return label;
+};
+(async () => {
+  let increment = true;
+  try { increment = !localStorage.getItem('moraki-visitor-counted-v1'); } catch {}
+  try {
+    const count = await counterRequest('visitors', increment);
+    visitorCount.textContent = countFormat.format(count);
+    visitorCounter.setAttribute('aria-label', countFormat.format(count) + ' visitors');
+    try { localStorage.setItem('moraki-visitor-counted-v1', 'true'); } catch {}
+  } catch { visitorCounter.hidden = true; }
+})();
 
 const updateSectionPath = () => {
   if (!siteMain || !sectionPath || !sectionPathLine || sectionSteps.length < 2) return;
@@ -910,11 +929,11 @@ const renderPerformancePlaylist = (selectedIndex) => {
       preview.dataset.src = resolveSitePath(item.src);
     }
 
-    const label = document.createElement("span");
-    label.textContent = title;
+    const label = createPerformanceLabel(item);
     listItem.append(preview, label);
 
     const selectPerformance = () => {
+      countVideoClick(item);
       if (index === currentPerformanceVideoIndex) {
         setPerformancePlaylistSelection(index);
         return;
@@ -962,6 +981,7 @@ const openPerformanceVideo = (index) => {
     setHeroAudioMuted(true);
   }
 
+  countVideoClick(item);
   currentPerformanceVideoIndex = index;
   renderPerformancePlaylist(index);
   performanceLightbox.classList.add("is-open");
@@ -1130,8 +1150,7 @@ const createPerformanceCard = (item, index, position) => {
   }
 
   if (position === "current") {
-    const label = document.createElement("span");
-    label.textContent = title;
+    const label = createPerformanceLabel(item);
     card.append(label);
   }
 
@@ -1149,8 +1168,7 @@ const setPerformanceCardPosition = (card, position) => {
   card.querySelector(":scope > span")?.remove();
 
   if (position === "current") {
-    const label = document.createElement("span");
-    label.textContent = title;
+    const label = createPerformanceLabel(item);
     card.append(label);
     card.setAttribute("aria-current", "true");
     card.setAttribute("aria-label", `${labels.openMedia}: ${title}`);

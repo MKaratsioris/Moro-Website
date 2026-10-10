@@ -22,3 +22,11 @@ Aim for roughly 10–25 MB per performance video when the source and acceptable 
 - `v1.0` : Main website in English. Sections included - `About`, `Schedule`, `Gallery`, `Performances`, `Contact Me`.
 - `v2.0`: Add language menu - `English`, `Spanish`, `Greek`, `Italian`, `French`, `German`, `Swedish`, `Danish`, `Turkish`, `Russian`, `Korean`, `Japanese`, `Chinese`, `Arabic`.
 - `v3.0`: Add music player.
+
+## Audience counters
+
+The hero counts each browser once (using local storage), across all language pages. Each performance selection adds one video view; carousel navigation and automatic previews do not add views. Starting totals are generated once: 3696–9636 visitors and 369–963 views per video, before adding new activity.
+
+Production counters use the Netlify function in `netlify/functions/counters.mjs` and the site-wide `audience-counters` Blobs store. Netlify installs the dependency from `package.json` during deployment. Conditional writes protect concurrent increments. Deploy through Netlify to activate shared totals; static hosting alone cannot run this endpoint. These seeded totals are display counters, not historical analytics.
+
+Localhost/file previews use separate local storage counts. Run `node tools/preview.cjs` and open http://127.0.0.1:4173/ to preview. Browser-local visitor recognition resets if storage is cleared or a different browser is used.

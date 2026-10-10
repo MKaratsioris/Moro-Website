@@ -3285,3 +3285,14 @@ body.past-hero .site-nav .nav-fade-item {
     transform: translate(-3vw, var(--stage-y)) rotate(-4deg) scale(0.96);
   }
 }
+
+/* Shared visitor and performance counters. */
+.hero-viewers { position: fixed; left: clamp(18px, 3vw, 42px); bottom: clamp(18px, 3vw, 42px); z-index: 12; display: flex; align-items: center; gap: .6rem; min-height: clamp(48px, 4.6vw, 64px); padding: 0 1rem; border: 2px solid var(--accent); border-radius: 999px; background: rgba(255,255,255,.76); color: var(--accent); font-size: .95rem; font-variant-numeric: tabular-nums; transition: opacity 280ms ease, transform 280ms ease; }
+.hero-viewers svg, .view-count svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.8; flex-shrink: 0; }
+html[data-contrast="dark"] .hero-viewers { background: rgba(0,0,0,.62); }
+body.hero-audio-hidden .hero-viewers, body.menu-open .hero-viewers { opacity: 0; pointer-events: none; transform: translateY(10px); }
+.hero-viewers[hidden] { display: none; }
+.performance-card .performance-caption, .performance-lightbox__playlist-item .performance-caption { display: flex; align-items: center; gap: .65rem; }
+.performance-caption strong { min-width: 0; font: inherit; overflow-wrap: anywhere; }
+.view-count { display: inline-flex; align-items: center; gap: .3rem; flex-shrink: 0; font-size: .75rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.view-count svg { width: 1rem; height: 1rem; }

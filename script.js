@@ -758,54 +758,34 @@ const initializeHeroPlaylist = () => {
 
 const renderGallery = () => {
   if (!galleryGrid) return;
-
-  galleryGrid.innerHTML = "";
-  const totalPages = Math.max(1, Math.ceil(mediaManifest.gallery.length / galleryPreviewCount));
-  currentGalleryPage = Math.min(currentGalleryPage, totalPages - 1);
-  const pageStart = currentGalleryPage * galleryPreviewCount;
-  const pageItems = mediaManifest.gallery.slice(pageStart, pageStart + galleryPreviewCount);
-
-  pageItems.forEach((item, index) => {
-    const manifestIndex = pageStart + index;
-    const button = document.createElement("button");
-    button.className = index === 0 ? "photo-card photo-card--wide" : "photo-card";
-    button.type = "button";
-    button.dataset.photo = item.src;
-    button.dataset.photoIndex = String(manifestIndex);
-    button.setAttribute("aria-label", `${labels.openMedia} ${item.alt || titleFromPath(item.src)}`);
-
-    const image = document.createElement("img");
-    image.src = resolveSitePath(item.src);
-    image.alt = item.alt || `${titleFromPath(item.src)} ${labels.photoAltJoin}`;
-    image.loading = index === 0 ? "eager" : "lazy";
-
-    button.append(image);
-    galleryGrid.append(button);
-  });
-
-  renderGalleryPagination(totalPages);
+  galleryGrid.replaceChildren();
+  const items = mediaManifest.gallery, total = items.length;
+  galleryGrid.classList.add('gallery-stage');
+  if (total) {
+    currentGalleryPage = (currentGalleryPage + total) % total;
+    const positions = total === 1 ? ['current'] : total === 2 ? ['current','next'] : ['previous','current','next'];
+    positions.forEach(position => {
+      const offset = position === 'previous' ? -1 : position === 'next' ? 1 : 0;
+      const index = (currentGalleryPage + offset + total) % total;
+      const item = items[index], button = document.createElement('button');
+      button.type = 'button'; button.className = 'gallery-card gallery-card--' + position;
+      button.dataset.photoIndex = index;
+      if (position === 'current') { button.dataset.photo = item.src; button.setAttribute('aria-current','true'); }
+      else button.addEventListener('click', () => setGalleryPage(index));
+      button.setAttribute('aria-label', labels.openMedia + ' ' + (item.alt || titleFromPath(item.src)));
+      const image = document.createElement('img'); image.src = resolveSitePath(item.src); image.alt = item.alt || titleFromPath(item.src); image.loading = 'lazy';
+      button.append(image); galleryGrid.append(button);
+    });
+  }
+  if (galleryPrev) galleryPrev.disabled = total < 2;
+  if (galleryNext) galleryNext.disabled = total < 2;
+  if (galleryStatus) galleryStatus.textContent = total ? (currentGalleryPage + 1) + ' / ' + total : '';
   scheduleSectionPathUpdate();
 };
-
-function renderGalleryPagination(totalPages) {
-  if (galleryPrev) {
-    galleryPrev.disabled = currentGalleryPage === 0 || totalPages <= 1;
-  }
-
-  if (galleryNext) {
-    galleryNext.disabled = currentGalleryPage >= totalPages - 1 || totalPages <= 1;
-  }
-
-  if (galleryStatus) {
-    galleryStatus.textContent = mediaManifest.gallery.length ? `${currentGalleryPage + 1} / ${totalPages}` : "";
-  }
-}
-
-const setGalleryPage = (page) => {
-  const totalPages = Math.max(1, Math.ceil(mediaManifest.gallery.length / galleryPreviewCount));
-  currentGalleryPage = Math.min(Math.max(page, 0), totalPages - 1);
-  renderGallery();
-  bindPhotoButtons();
+const setGalleryPage = page => {
+  const total = mediaManifest.gallery.length;
+  currentGalleryPage = total ? (page + total) % total : 0;
+  renderGallery(); bindPhotoButtons();
 };
 
 function renderPerformancePagination() {
@@ -1480,13 +1460,41 @@ const showPhoto = (index) => {
   photoPreview.src = resolveSitePath(item.src);
   photoPreview.alt = item.alt || `${titleFromPath(item.src)} ${labels.photoAltJoin}`;
   photoCount.textContent = `${currentPhotoIndex + 1} / ${mediaManifest.gallery.length}`;
+  renderPhotoThumbnails();
 };
 
+let photoReturnFocus;
+const photoThumbnails = document.createElement('div');
+photoThumbnails.className = 'photo-thumbnails';
+photoThumbnails.setAttribute('aria-label', document.querySelector('#gallery .section-label')?.textContent || 'Gallery');
+photoLightbox.append(photoThumbnails);
+photoLightbox.setAttribute('aria-modal', 'true');
+const renderPhotoThumbnails = () => {
+  if (photoThumbnails.children.length !== mediaManifest.gallery.length) {
+    photoThumbnails.replaceChildren();
+    mediaManifest.gallery.forEach((item, index) => {
+      const button = document.createElement('button'); button.type = 'button';
+      const img = document.createElement('img'); img.src = resolveSitePath(item.src); img.alt = item.alt || titleFromPath(item.src); img.loading = 'lazy';
+      button.setAttribute('aria-label', labels.openMedia + ' ' + img.alt);
+      button.append(img); button.addEventListener('click', () => showPhoto(index)); photoThumbnails.append(button);
+    });
+  }
+  [...photoThumbnails.children].forEach((button,index) => button.setAttribute('aria-current', String(index === currentPhotoIndex)));
+  photoThumbnails.children[currentPhotoIndex]?.scrollIntoView({block:'nearest',inline:'nearest'});
+};
+photoLightbox.addEventListener('keydown', event => {
+  if (event.key !== 'Tab') return;
+  const controls = [...photoLightbox.querySelectorAll('button')];
+  const first = controls[0], last = controls[controls.length - 1];
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+});
 const showRelativePhoto = (step) => {
   showPhoto(currentPhotoIndex + step);
 };
 
 const openPhoto = (button) => {
+  photoReturnFocus = button;
   const index = Number(button.dataset.photoIndex || 0);
   showPhoto(index);
   photoLightbox.classList.add("is-open");
@@ -1496,6 +1504,7 @@ const openPhoto = (button) => {
 };
 
 function closePhoto() {
+  photoReturnFocus?.focus();
   photoLightbox.classList.remove("is-open");
   photoLightbox.setAttribute("aria-hidden", "true");
   photoPreview.removeAttribute("src");

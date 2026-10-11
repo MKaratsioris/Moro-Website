@@ -3344,3 +3344,49 @@ body.hero-audio-hidden .hero-viewers, body.menu-open .hero-viewers { opacity: 0;
 @media (max-width: 700px) {
   .music-playlist { --music-visible-rows: 3; }
 }
+
+/* Layered music console */
+.music-section { padding-top: 10rem; }
+.music-player { border-radius: 28px; overflow: hidden; border-color: color-mix(in srgb, var(--accent) 22%, var(--soft)); background: radial-gradient(ellipse at 12% 0%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 65%), var(--panel); box-shadow: 0 24px 70px #00000014; }
+.music-deck { background: linear-gradient(145deg, #ffffff08, #00000005); }
+.music-record { width: 154px; height: 154px; border: 7px solid #202020; box-shadow: 0 14px 30px #0004, 0 0 0 14px color-mix(in srgb, var(--accent) 5%, transparent); }
+.music-record span { width: 54px; height: 54px; box-shadow: 0 0 0 4px #111; }
+.is-playing .music-record { animation: music-spin 9s linear infinite; }
+.music-title-window { width: 100%; overflow: hidden; margin: 1.8rem 0 1.3rem; mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
+.music-title-window h3 { display: block; width: max-content; min-height: 0; margin: 0; padding-left: 100%; white-space: nowrap; font-size: clamp(1.25rem, 2vw, 1.8rem); animation: music-title-slide 20s linear infinite; direction: ltr; }
+.music-transport { gap: 1rem; }
+.music-transport button, .music-volume button { background: color-mix(in srgb, var(--bg) 65%, transparent); box-shadow: 0 3px 8px #00000009; }
+.music-transport [data-music-action="play"] { box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 35%, transparent); }
+.music-library { display: flex; align-items: center; padding: 2rem; background: color-mix(in srgb, var(--bg) 40%, transparent); }
+.music-playlist { width: 100%; }
+.music-playlist li + li { margin-top: .4rem; }
+.music-playlist button { border-radius: 12px; gap: .75rem; padding: .85rem; }
+.music-playlist button .music-track-name { flex: 1; min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.music-playlist button .music-track-duration { flex: 0 0 3rem; text-align: right; direction: ltr; color: var(--muted); font: .75rem Arial, sans-serif; }
+.music-playlist .is-active button { box-shadow: inset 3px 0 var(--accent); }
+@keyframes music-spin { to { transform: rotate(360deg); } }
+@keyframes music-title-slide { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@media (prefers-reduced-motion: reduce) { .is-playing .music-record { animation: none; } .music-title-window h3 { animation-duration: 45s; } }
+@media (max-width: 700px) { .music-player { border-radius: 20px; } .music-library { padding: 1rem; } .music-record { width: 120px; height: 120px; } }
+
+/* Gallery carousel and expanded photo viewer */
+.media-grid--photos.gallery-stage { display: block; position: relative; height: clamp(320px, 46vw, 610px); perspective: 1200px; overflow: hidden; }
+.gallery-card { position: absolute; top: 50%; left: 50%; width: 74%; height: 90%; padding: 0; border: 2px solid var(--soft); border-radius: 16px; overflow: hidden; background: #111; box-shadow: 0 22px 50px #0004; cursor: pointer; transition: transform .5s, opacity .5s; }
+.gallery-card img { width: 100%; height: 100%; object-fit: contain; }
+.gallery-card--current { z-index: 3; transform: translate(-50%,-50%); cursor: zoom-in; }
+.gallery-card--previous { z-index: 1; opacity: .45; transform: translate(-112%,-50%) rotateY(45deg) scale(.78); }
+.gallery-card--next { z-index: 1; opacity: .45; transform: translate(12%,-50%) rotateY(-45deg) scale(.78); }
+.gallery-card:focus-visible { outline: 3px solid var(--accent); outline-offset: -4px; }
+.photo-lightbox.is-open { grid-template-columns: minmax(0,1fr) 210px; gap: 1.5rem; padding: 5rem 6rem; }
+.photo-lightbox [data-photo-preview] { width: 100%; height: 76svh; border-radius: 14px; }
+.photo-thumbnails { height: 76svh; overflow: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: .75rem; }
+.photo-thumbnails::-webkit-scrollbar { display: none; }
+.photo-thumbnails button { border: 2px solid transparent; border-radius: 9px; padding: 0; background: #111; flex: 0 0 115px; overflow: hidden; cursor: pointer; }
+.photo-thumbnails button[aria-current="true"] { border-color: var(--accent); }
+.photo-thumbnails button img { width: 100%; height: 100%; border: 0; object-fit: cover; }
+@media (max-width: 700px) {
+  .photo-lightbox.is-open { grid-template-columns: minmax(0,1fr); grid-template-rows: minmax(0,1fr) 90px; gap: 1rem; padding: 4.5rem 2.5rem 3rem; }
+  .photo-lightbox [data-photo-preview] { height: 100%; min-height: 0; }
+  .photo-thumbnails { height: 90px; flex-direction: row; }
+  .photo-thumbnails button { flex: 0 0 100px; }
+}

@@ -305,13 +305,13 @@
       <!-- --------------------------------------- -->
 
       <section class="content-section music-section" id="music" aria-labelledby="music-heading">
-        <div class="music-eyebrow">संगीत</div>
+        <div class="section-index section-index--left" aria-hidden="true"><span class="section-step" data-section-step>1</span><span class="section-label">संगीत</span></div>
         <h2 id="music-heading">मेरा पसंदीदा <span class="text-accent">संगीत</span></h2>
         <div class="music-player" data-music-player data-music-labels='["संगीत","मेरा पसंदीदा <span class=\"text-accent\">संगीत</span>","अभी चल रहा है","प्लेलिस्ट","गाना चलाने के लिए दो बार क्लिक करें","चलाएँ","रोकें","बंद करें","पिछला गाना","अगला गाना","आवाज़ बंद करें","आवाज़ चालू करें","आवाज़","आवाज़ घटाएँ","आवाज़ बढ़ाएँ","गाने की प्रगति","अभी कोई गाना नहीं है","यह गाना नहीं चल सका"]'>
           <div class="music-deck">
             <div class="music-record" aria-hidden="true"><span>♪</span></div>
-            <div class="music-eyebrow">अभी चल रहा है</div>
-            <h3 data-music-title aria-live="polite"></h3>
+
+            <div class="music-title-window"><h3 data-music-title aria-live="polite"></h3></div>
             <div class="music-transport"><button type="button" data-music-action="previous" aria-label="पिछला गाना" title="पिछला गाना">❮</button><button type="button" data-music-action="play" aria-label="चलाएँ" title="चलाएँ">▶</button><button type="button" data-music-action="stop" aria-label="बंद करें" title="बंद करें">■</button><button type="button" data-music-action="next" aria-label="अगला गाना" title="अगला गाना">❯</button></div>
             <div class="music-progress"><input type="range" data-music-progress min="0" max="100" value="0" step="0.1" aria-label="गाने की प्रगति" disabled><div class="music-times"><span data-music-elapsed>0:00</span><span data-music-duration>0:00</span></div></div>
             <div class="music-volume"><button type="button" data-music-action="mute" aria-label="आवाज़ बंद करें" title="आवाज़ बंद करें">♫</button><button type="button" data-music-action="quieter" aria-label="आवाज़ घटाएँ" title="आवाज़ घटाएँ">−</button><input type="range" data-music-volume min="0" max="1" step="0.01" value="0.7" aria-label="आवाज़"><button type="button" data-music-action="louder" aria-label="आवाज़ बढ़ाएँ" title="आवाज़ बढ़ाएँ">+</button></div>
@@ -325,7 +325,7 @@
       <section class="content-section" id="about">
         <div class="section-index section-index--right" aria-hidden="true">
           <span class="section-label">परिचय</span>
-          <span class="section-step" data-section-step>1</span>
+          <span class="section-step" data-section-step>2</span>
         </div>
         <h2>नज़ाकत, शक्ति, संगीतात्मकता.</h2>
         <p class="about-intro">
@@ -473,7 +473,7 @@
 
       <section class="content-section split-section" id="schedule">
         <div class="section-index section-index--left" aria-hidden="true">
-          <span class="section-step" data-section-step>2</span>
+          <span class="section-step" data-section-step>3</span>
           <span class="section-label">कार्यक्रम</span>
         </div>
         <div class="schedule-heading">
@@ -535,7 +535,7 @@
       <section class="content-section media-section" id="gallery">
         <div class="section-index section-index--right" aria-hidden="true">
           <span class="section-label">गैलरी</span>
-          <span class="section-step" data-section-step>3</span>
+          <span class="section-step" data-section-step>4</span>
         </div>
         <div class="gallery-carousel" aria-label="Gallery carousel">
           <div class="media-grid media-grid--photos" data-gallery-grid></div>
@@ -571,7 +571,7 @@
 
       <section class="content-section media-section" id="performances">
         <div class="section-index section-index--left" aria-hidden="true">
-          <span class="section-step" data-section-step>4</span>
+          <span class="section-step" data-section-step>5</span>
           <span class="section-label">प्रदर्शन</span>
         </div>
         <div class="performance-carousel" aria-label="Performance carousel">
@@ -613,7 +613,7 @@
       <section class="content-section contact-section" id="contact-me">
         <div class="section-index section-index--right" aria-hidden="true">
           <span class="section-label">संपर्क</span>
-          <span class="section-step" data-section-step>5</span>
+          <span class="section-step" data-section-step>6</span>
         </div>
         <h2>सहयोग के लिए</h2>
         <a class="large-email" href="mailto:aleitangofloreada@gmail.com">

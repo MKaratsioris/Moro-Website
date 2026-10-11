@@ -305,13 +305,13 @@
       <!-- --------------------------------------- -->
 
       <section class="content-section music-section" id="music" aria-labelledby="music-heading">
-        <div class="music-eyebrow">音乐</div>
+        <div class="section-index section-index--left" aria-hidden="true"><span class="section-step" data-section-step>1</span><span class="section-label">音乐</span></div>
         <h2 id="music-heading">我最喜欢的<span class="text-accent">音乐</span></h2>
         <div class="music-player" data-music-player data-music-labels='["音乐","我最喜欢的<span class=\"text-accent\">音乐</span>","正在播放","播放列表","双击歌曲即可播放","播放","暂停","停止","上一首","下一首","静音","取消静音","音量","降低音量","提高音量","播放进度","暂无歌曲","无法播放此歌曲"]'>
           <div class="music-deck">
             <div class="music-record" aria-hidden="true"><span>♪</span></div>
-            <div class="music-eyebrow">正在播放</div>
-            <h3 data-music-title aria-live="polite"></h3>
+
+            <div class="music-title-window"><h3 data-music-title aria-live="polite"></h3></div>
             <div class="music-transport"><button type="button" data-music-action="previous" aria-label="上一首" title="上一首">❮</button><button type="button" data-music-action="play" aria-label="播放" title="播放">▶</button><button type="button" data-music-action="stop" aria-label="停止" title="停止">■</button><button type="button" data-music-action="next" aria-label="下一首" title="下一首">❯</button></div>
             <div class="music-progress"><input type="range" data-music-progress min="0" max="100" value="0" step="0.1" aria-label="播放进度" disabled><div class="music-times"><span data-music-elapsed>0:00</span><span data-music-duration>0:00</span></div></div>
             <div class="music-volume"><button type="button" data-music-action="mute" aria-label="静音" title="静音">♫</button><button type="button" data-music-action="quieter" aria-label="降低音量" title="降低音量">−</button><input type="range" data-music-volume min="0" max="1" step="0.01" value="0.7" aria-label="音量"><button type="button" data-music-action="louder" aria-label="提高音量" title="提高音量">+</button></div>
@@ -325,7 +325,7 @@
       <section class="content-section" id="about">
         <div class="section-index section-index--right" aria-hidden="true">
           <span class="section-label">关于</span>
-          <span class="section-step" data-section-step>1</span>
+          <span class="section-step" data-section-step>2</span>
         </div>
         <h2>优雅、力量、音乐性。</h2>
         <p class="about-intro">
@@ -473,7 +473,7 @@
 
       <section class="content-section split-section" id="schedule">
         <div class="section-index section-index--left" aria-hidden="true">
-          <span class="section-step" data-section-step>2</span>
+          <span class="section-step" data-section-step>3</span>
           <span class="section-label">日程</span>
         </div>
         <div class="schedule-heading">
@@ -535,7 +535,7 @@
       <section class="content-section media-section" id="gallery">
         <div class="section-index section-index--right" aria-hidden="true">
           <span class="section-label">图库</span>
-          <span class="section-step" data-section-step>3</span>
+          <span class="section-step" data-section-step>4</span>
         </div>
         <div class="gallery-carousel" aria-label="Gallery carousel">
           <div class="media-grid media-grid--photos" data-gallery-grid></div>
@@ -571,7 +571,7 @@
 
       <section class="content-section media-section" id="performances">
         <div class="section-index section-index--left" aria-hidden="true">
-          <span class="section-step" data-section-step>4</span>
+          <span class="section-step" data-section-step>5</span>
           <span class="section-label">演出</span>
         </div>
         <div class="performance-carousel" aria-label="Performance carousel">
@@ -613,7 +613,7 @@
       <section class="content-section contact-section" id="contact-me">
         <div class="section-index section-index--right" aria-hidden="true">
           <span class="section-label">联系</span>
-          <span class="section-step" data-section-step>5</span>
+          <span class="section-step" data-section-step>6</span>
         </div>
         <h2>合作联系</h2>
         <a class="large-email" href="mailto:aleitangofloreada@gmail.com">

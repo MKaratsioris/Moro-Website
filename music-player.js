@@ -2,7 +2,7 @@
   const player = document.querySelector('[data-music-player]');
   if (!player) return;
   const labels = JSON.parse(player.dataset.musicLabels);
-  const tracks = window.MORAKI_MEDIA?.music || [];
+  let tracks = window.MORAKI_MEDIA?.music || [];
   const find = name => player.querySelector(`[data-music-${name}]`);
   const audio = find('audio'), title = find('title'), playlist = find('playlist');
   const progress = find('progress'), volume = find('volume'), error = find('error');
@@ -71,18 +71,25 @@
     syncProgress();
     if (autoplay) start(true);
   };
+  const renderTracks = () => {
+  playlist.replaceChildren();
   tracks.forEach((track, i) => {
     const row = document.createElement('li'), button = document.createElement('button');
     button.type = 'button';
     const number = document.createElement('span'); number.textContent = String(i + 1).padStart(2, '0');
     const name = document.createElement('span'); name.textContent = track.title;
-    button.append(number, name); row.append(button); playlist.append(row);
+    name.className = 'music-track-name';
+    const duration = document.createElement('time'); duration.className = 'music-track-duration'; duration.textContent = track.duration ? time(track.duration) : '—:—';
+    button.title = track.title;
+    button.append(number, name, duration); row.append(button); playlist.append(row);
     button.addEventListener('dblclick', () => select(i, true));
     button.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(i, true); } });
     // Touch users can start a song with a single tap.
     button.addEventListener('pointerup', event => { if (event.pointerType === 'touch' || event.pointerType === 'pen') select(i, true); });
   });
 
+  };
+  renderTracks();
   player.addEventListener('click', event => {
     const action = event.target.closest('[data-music-action]')?.dataset.musicAction;
     if (!action || !tracks.length) return;
@@ -99,6 +106,59 @@
   ['play', 'pause', 'ended'].forEach(event => audio.addEventListener(event, syncPlay));
   audio.addEventListener('ended', () => select(current + 1, true));
   audio.addEventListener('error', () => { error.textContent = labels[17]; });
+  const durationCache = new Map();
+  let loadingDurations = false;
+  const loadDurations = async () => {
+    if (loadingDurations) return;
+    loadingDurations = true;
+    for (const track of [...tracks]) {
+      if (!durationCache.has(track.src)) {
+        const probe = new Audio(); probe.preload = 'metadata';
+        const seconds = await new Promise(resolve => {
+          const timer = setTimeout(() => resolve(0), 10000);
+          probe.onloadedmetadata = () => { clearTimeout(timer); resolve(probe.duration); };
+          probe.onerror = () => { clearTimeout(timer); resolve(0); };
+          probe.src = new URL(track.src.split('/').map(encodeURIComponent).join('/'), scriptURL).href;
+        });
+        if (Number.isFinite(seconds) && seconds > 0) durationCache.set(track.src, seconds);
+        probe.removeAttribute('src'); probe.load();
+      }
+      const index = tracks.findIndex(item => item.src === track.src);
+      if (index >= 0 && durationCache.has(track.src)) playlist.children[index]?.querySelector('time')?.replaceChildren(time(durationCache.get(track.src)));
+    }
+    loadingDurations = false;
+  };
+  const refreshTracks = async () => {
+    try {
+      let next;
+      if (['localhost', '127.0.0.1'].includes(location.hostname)) {
+        const response = await fetch('/api/music', { cache: 'no-store' });
+        if (!response.ok) return;
+        next = await response.json();
+      } else {
+        const response = await fetch(new URL('media-manifest.js', scriptURL), { cache: 'no-store' });
+        const match = (await response.text()).match(/window\.MORAKI_MEDIA\s*=\s*([\s\S]*?);\s*$/);
+        next = match ? JSON.parse(match[1]).music : null;
+      }
+      if (!Array.isArray(next)) return;
+      if (JSON.stringify(next) !== JSON.stringify(tracks)) {
+        const selected = tracks[current]?.src;
+        tracks = next;
+        renderTracks();
+        const index = tracks.findIndex(track => track.src === selected);
+        if (index >= 0) { current = index; playlist.children[index]?.classList.add('is-active'); playlist.children[index]?.querySelector('button').setAttribute('aria-current', 'true'); }
+        else if (tracks.length) select(0, false);
+        else { ++request; audio.pause(); audio.removeAttribute('src'); audio.load(); title.textContent = labels[16]; }
+        player.querySelectorAll('button').forEach(button => { button.disabled = !tracks.length; });
+        volume.disabled = !tracks.length;
+      }
+      loadDurations();
+    } catch { /* Static previews keep the build-time playlist. */ }
+  };
+  refreshTracks();
+  loadDurations();
+  setInterval(() => { if (!document.hidden) refreshTracks(); }, 5000);
+  window.addEventListener('focus', refreshTracks);
   syncVolume();
   if (tracks.length) select(0, false);
   else { title.textContent = labels[16]; player.querySelectorAll('button, input').forEach(control => { control.disabled = true; }); }

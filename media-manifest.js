@@ -307,8 +307,32 @@ window.MORAKI_MEDIA = {
   ],
   "music": [
     {
+      "src": "music/A la luz del candil(C.V.G.Flores,J.Navarrine) - Di Sarli, J.Durán [27.9.1956].mp3",
+      "title": "A la luz del candil(C.V.G.Flores,J.Navarrine) - Di Sarli, J.Durán [27.9.1956]"
+    },
+    {
+      "src": "music/Nada(J.Dames,H.Sanguinetti) - Di Sarli, A.Podestá [13.4.1944].mp3",
+      "title": "Nada(J.Dames,H.Sanguinetti) - Di Sarli, A.Podestá [13.4.1944]"
+    },
+    {
+      "src": "music/No está(José Bohr) - Di Sarli, A.Podestá [30.3.1942].m4a",
+      "title": "No está(José Bohr) - Di Sarli, A.Podestá [30.3.1942]"
+    },
+    {
+      "src": "music/No Me Pregunten Por Qué(Di Sarli,R.Pignataro) - Di Sarli, J.Durán [26.4.1956].mp3",
+      "title": "No Me Pregunten Por Qué(Di Sarli,R.Pignataro) - Di Sarli, J.Durán [26.4.1956]"
+    },
+    {
       "src": "music/Tormenta - O.T. Carlos Di Sarli con Mario Pomar.MP3",
       "title": "Tormenta - O.T. Carlos Di Sarli con Mario Pomar"
+    },
+    {
+      "src": "music/Tú!...el cielo y tú!!(M.Canaro,H.Marcó) - Di Sarli, A.Podestá [8.11.1944].mp3",
+      "title": "Tú!...el cielo y tú!!(M.Canaro,H.Marcó) - Di Sarli, A.Podestá [8.11.1944]"
+    },
+    {
+      "src": "music/Whisky(Di Sarli,H.Marcó) - Di Sarli, J.Durán [4.10.1957].mp3",
+      "title": "Whisky(Di Sarli,H.Marcó) - Di Sarli, J.Durán [4.10.1957]"
     }
   ]
 };

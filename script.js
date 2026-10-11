@@ -567,6 +567,13 @@ const setHeroAudioMuted = (muted) => {
   updateHeroAudioButton();
 };
 
+// Music playback leaves the Hero muted until its own control is used.
+document.addEventListener('play', event => {
+  if (!event.target.matches('[data-music-audio]')) return;
+  setHeroAudioMuted(true);
+  if (heroAudioMutedBeforePerformance !== null) heroAudioMutedBeforePerformance = true;
+}, true);
+
 const setHeroVideo = (index, shouldPlay = true) => {
   if (!heroVideoLayers.length) return;
 

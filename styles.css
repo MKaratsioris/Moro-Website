@@ -3398,3 +3398,5 @@ body.hero-audio-hidden .hero-viewers, body.menu-open .hero-viewers { opacity: 0;
 .music-playlist li:hover .music-track-number, .music-playlist li:focus-within .music-track-number { visibility: hidden; }
 .music-playlist li:hover .music-track-play, .music-playlist li:focus-within .music-track-play { opacity: 1; visibility: visible; }
 @media (hover: none) { .music-playlist button .music-track-number { visibility: hidden; } .music-playlist button .music-track-play { opacity: 1; visibility: visible; } }
+.music-playlist .is-track-playing .music-track-number { visibility: hidden; }
+.music-playlist .is-track-playing .music-track-play { opacity: 1; visibility: visible; }

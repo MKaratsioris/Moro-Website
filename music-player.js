@@ -27,6 +27,13 @@
     setLabel(playButton, labels[playing ? 6 : 5]);
     playButton.setAttribute('aria-pressed', String(playing));
     player.classList.toggle('is-playing', playing);
+    [...playlist.children].forEach((row, index) => {
+      const control = row.querySelector('.music-track-play');
+      const active = index === current && playing;
+      row.classList.toggle('is-track-playing', active);
+      control.innerHTML = icon(active ? '<path d="M8 5v14M16 5v14"/>' : '<path d="m9 6 9 6-9 6z" fill="currentColor" stroke="none"/>');
+      control.title = labels[active ? 6 : 5];
+    });
   };
   const syncProgress = () => {
     const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
@@ -80,7 +87,13 @@
     const indexLabel = document.createElement('span'); indexLabel.className = 'music-track-number'; indexLabel.textContent = String(i + 1).padStart(2, '0');
     const quickPlay = document.createElement('span'); quickPlay.className = 'music-track-play'; quickPlay.title = labels[5]; quickPlay.setAttribute('aria-hidden', 'true'); quickPlay.innerHTML = icon('<path d="m9 6 9 6-9 6z" fill="currentColor" stroke="none"/>');
     number.append(indexLabel, quickPlay);
-    quickPlay.addEventListener('click', event => { event.stopPropagation(); if (event.detail <= 1) select(i, true); });
+    quickPlay.addEventListener('click', event => {
+      event.stopPropagation();
+      if (event.detail > 1) return;
+      if (i !== current) select(i, true);
+      else if (audio.paused) start();
+      else { ++request; cancelFade(); audio.pause(); }
+    });
     quickPlay.addEventListener('dblclick', event => event.stopPropagation());
     const name = document.createElement('span'); name.textContent = track.title;
     name.className = 'music-track-name';
@@ -92,6 +105,7 @@
     // Touch users can start a song with a single tap.
     button.addEventListener('pointerup', event => { if ((event.pointerType === 'touch' || event.pointerType === 'pen') && !event.target.closest('.music-track-play')) select(i, true); });
   });
+  syncPlay();
 
   };
   renderTracks();

@@ -3,6 +3,7 @@
   if (!player) return;
   const labels = JSON.parse(player.dataset.musicLabels);
   let tracks = window.MORAKI_MEDIA?.music || [];
+  const displayTitle = track => track.title.replace(/^\s*\d+[\s._)\-–—]*/, '').trim();
   const find = name => player.querySelector(`[data-music-${name}]`);
   const audio = find('audio'), title = find('title'), playlist = find('playlist');
   const progress = find('progress'), volume = find('volume'), error = find('error');
@@ -70,7 +71,7 @@
     audio.pause();
     current = (index + tracks.length) % tracks.length;
     audio.src = new URL(tracks[current].src.split('/').map(encodeURIComponent).join('/'), scriptURL).href;
-    title.textContent = tracks[current].title;
+    title.textContent = displayTitle(tracks[current]);
     [...playlist.children].forEach((row, i) => {
       row.classList.toggle('is-active', i === current);
       row.querySelector('button').setAttribute('aria-current', String(i === current));
@@ -95,10 +96,10 @@
       else { ++request; cancelFade(); audio.pause(); }
     });
     quickPlay.addEventListener('dblclick', event => event.stopPropagation());
-    const name = document.createElement('span'); name.textContent = track.title;
+    const name = document.createElement('span'); name.textContent = displayTitle(track);
     name.className = 'music-track-name';
     const duration = document.createElement('time'); duration.className = 'music-track-duration'; duration.textContent = track.duration ? time(track.duration) : '—:—';
-    button.title = track.title;
+    button.title = displayTitle(track);
     button.append(number, name, duration); row.append(button); playlist.append(row);
     button.addEventListener('dblclick', () => select(i, true));
     button.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(i, true); } });

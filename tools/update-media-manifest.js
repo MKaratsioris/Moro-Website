@@ -189,7 +189,9 @@ const hero = preferWebVideos(readFolder(path.join("video", "hero"), videoExtensi
   };
 });
 
-const output = `window.MORAKI_MEDIA = ${JSON.stringify({ hero, gallery, performances }, null, 2)};\n`;
+const music = readFolder("music", new Set([".mp3", ".m4a", ".aac", ".ogg", ".wav", ".flac", ".opus", ".webm"])).map(file => ({ src: toWebPath(file), title: titleFromFile(file) }));
+
+const output = `window.MORAKI_MEDIA = ${JSON.stringify({ hero, gallery, performances, music }, null, 2)};\n`;
 fs.writeFileSync(manifestPath, output, "utf8");
 
 console.log(

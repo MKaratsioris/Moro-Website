@@ -3296,3 +3296,51 @@ body.hero-audio-hidden .hero-viewers, body.menu-open .hero-viewers { opacity: 0;
 .performance-caption strong { min-width: 0; font: inherit; overflow-wrap: anywhere; }
 .view-count { display: inline-flex; align-items: center; gap: .3rem; flex-shrink: 0; font-size: .75rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .view-count svg { width: 1rem; height: 1rem; }
+
+/* Music */
+.music-section { min-height: auto; padding-block: 6rem; }
+.music-eyebrow { font-size: .85rem; text-transform: uppercase; letter-spacing: .2em; color: var(--muted); }
+.music-section > h2 { margin: 1.2rem 0 3rem; }
+.music-player { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 1px solid var(--soft); background: var(--panel); }
+.music-deck { padding: 2.5rem clamp(1.2rem, 4vw, 4rem); text-align: center; }
+.music-record { width: 120px; height: 120px; margin: 0 auto 1.5rem; border-radius: 50%; background: repeating-radial-gradient(circle, #181818 0 3px, #303030 4px, #181818 5px 7px); display: grid; place-items: center; box-shadow: 0 8px 24px #0002; }
+.music-record span { display: grid; place-items: center; width: 43px; height: 43px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 1.5rem; }
+.music-deck h3 { min-height: 3em; margin: 1rem 0; font-size: clamp(1.25rem, 2vw, 1.8rem); overflow-wrap: anywhere; }
+.music-player button { cursor: pointer; border: 1px solid var(--soft); background: transparent; transition: background .2s, color .2s; }
+.music-player button:hover { background: var(--soft); }
+.music-player button:focus-visible, .music-player input:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.music-player button:disabled { opacity: .4; cursor: default; }
+.music-transport { display: flex; justify-content: center; align-items: center; gap: .75rem; direction: ltr; }
+.music-transport button { border-radius: 50%; width: 44px; height: 44px; font-size: 1rem; }
+.music-transport [data-music-action="play"] { width: 64px; height: 64px; background: var(--accent); color: #fff; border: 0; font-size: 1.4rem; }
+.music-progress { margin-top: 1.6rem; direction: ltr; }
+.music-player input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; min-width: 0; }
+.music-times { display: flex; justify-content: space-between; font: .75rem Arial, sans-serif; color: var(--muted); margin-top: .35rem; }
+.music-volume { display: flex; align-items: center; justify-content: center; gap: .6rem; margin: 1.2rem auto 0; max-width: 280px; direction: ltr; }
+.music-volume button { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; font-size: 1.1rem; }
+.music-library { border-inline-start: 1px solid var(--soft); padding: 2.5rem 2rem; min-width: 0; }
+.music-playlist { list-style: none; padding: 0; margin: 0; max-height: 325px; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; overscroll-behavior: contain; }
+.music-playlist::-webkit-scrollbar { display: none; }
+.music-playlist li + li { margin-top: .4rem; }
+.music-playlist button { display: flex; align-items: center; gap: 1rem; padding: 1.1rem; width: 100%; text-align: start; font-size: 1.1rem; line-height: 1.35; }
+.music-playlist button span:first-child { color: var(--muted); font: .75rem Arial, sans-serif; }
+.music-playlist button span:last-child { overflow-wrap: anywhere; }
+.music-playlist .is-active button { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.music-playlist .is-active button span:first-child { color: var(--accent); }
+.music-error { color: var(--accent); font-size: .9rem; min-height: 1.2em; margin-top: .5rem; }
+@media (max-width: 700px) {
+  .music-player { grid-template-columns: minmax(0, 1fr); }
+  .music-library { border-inline-start: 0; border-top: 1px solid var(--soft); padding: 1.5rem; }
+  .music-deck { padding: 2rem 1.5rem 1rem; }
+  .music-playlist { max-height: 260px; }
+}
+
+.music-transport button, .music-volume button { display: inline-grid; place-items: center; }
+
+/* Keep exactly five rows visible beside the player, or three below it. */
+.music-playlist { --music-visible-rows: 5; --music-row-height: 4.5rem; max-height: calc(var(--music-visible-rows) * var(--music-row-height) + (var(--music-visible-rows) - 1) * .4rem); }
+.music-playlist button { height: var(--music-row-height); }
+.music-playlist button span:last-child { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+@media (max-width: 700px) {
+  .music-playlist { --music-visible-rows: 3; }
+}

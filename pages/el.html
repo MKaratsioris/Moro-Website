@@ -240,6 +240,7 @@
 
     <nav class="menu-panel" data-menu-panel aria-label="Κύριο μενού">
       <a href="#home">Αρχική</a>
+      <a href="#music">Μουσική</a>
       <a href="#about">Σχετικά</a>
       <a href="#schedule">Πρόγραμμα</a>
       <a href="#gallery">Γκαλερί</a>
@@ -302,6 +303,24 @@
       <!-- --------------------------------------- -->
       <!------------ ABOUT SECTION ------------------>
       <!-- --------------------------------------- -->
+
+      <section class="content-section music-section" id="music" aria-labelledby="music-heading">
+        <div class="music-eyebrow">Μουσική</div>
+        <h2 id="music-heading">Η αγαπημένη μου <span class="text-accent">μουσική</span></h2>
+        <div class="music-player" data-music-player data-music-labels='["Μουσική","Η αγαπημένη μου <span class=\"text-accent\">μουσική</span>","Παίζει τώρα","Λίστα αναπαραγωγής","Κάντε διπλό κλικ σε ένα τραγούδι για αναπαραγωγή","Αναπαραγωγή","Παύση","Διακοπή","Προηγούμενο τραγούδι","Επόμενο τραγούδι","Σίγαση","Ενεργοποίηση ήχου","Ένταση","Μείωση έντασης","Αύξηση έντασης","Πρόοδος τραγουδιού","Δεν υπάρχουν τραγούδια","Δεν είναι δυνατή η αναπαραγωγή"]'>
+          <div class="music-deck">
+            <div class="music-record" aria-hidden="true"><span>♪</span></div>
+            <div class="music-eyebrow">Παίζει τώρα</div>
+            <h3 data-music-title aria-live="polite"></h3>
+            <div class="music-transport"><button type="button" data-music-action="previous" aria-label="Προηγούμενο τραγούδι" title="Προηγούμενο τραγούδι">❮</button><button type="button" data-music-action="play" aria-label="Αναπαραγωγή" title="Αναπαραγωγή">▶</button><button type="button" data-music-action="stop" aria-label="Διακοπή" title="Διακοπή">■</button><button type="button" data-music-action="next" aria-label="Επόμενο τραγούδι" title="Επόμενο τραγούδι">❯</button></div>
+            <div class="music-progress"><input type="range" data-music-progress min="0" max="100" value="0" step="0.1" aria-label="Πρόοδος τραγουδιού" disabled><div class="music-times"><span data-music-elapsed>0:00</span><span data-music-duration>0:00</span></div></div>
+            <div class="music-volume"><button type="button" data-music-action="mute" aria-label="Σίγαση" title="Σίγαση">♫</button><button type="button" data-music-action="quieter" aria-label="Μείωση έντασης" title="Μείωση έντασης">−</button><input type="range" data-music-volume min="0" max="1" step="0.01" value="0.7" aria-label="Ένταση"><button type="button" data-music-action="louder" aria-label="Αύξηση έντασης" title="Αύξηση έντασης">+</button></div>
+            <div class="music-error" data-music-error role="status"></div>
+          </div>
+          <div class="music-library"><ol class="music-playlist" data-music-playlist aria-label="Λίστα αναπαραγωγής"></ol></div>
+          <audio data-music-audio preload="metadata"></audio>
+        </div>
+      </section>
 
       <section class="content-section" id="about">
         <div class="section-index section-index--right" aria-hidden="true">
@@ -800,5 +819,6 @@
 
     <script src="../media-manifest.js"></script>
     <script src="../script.js"></script>
+    <script src="../music-player.js"></script>
   </body>
 </html>

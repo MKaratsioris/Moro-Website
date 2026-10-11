@@ -177,6 +177,7 @@ function Update-MediaManifest {
     hero = $Hero
     gallery = $Gallery
     performances = $Performances
+    music = @(Get-MediaFiles -Folder "music" -Extensions @(".mp3", ".m4a", ".aac", ".ogg", ".wav", ".flac", ".opus", ".webm") | ForEach-Object { [ordered]@{ src = Convert-ToWebPath $_.FullName; title = Convert-ToTitle $_.Name } })
   }
 
   $Json = $Manifest | ConvertTo-Json -Depth 6
@@ -189,7 +190,7 @@ function Update-MediaManifest {
 function Start-MediaManifestWatcher {
   Update-MediaManifest
 
-  $Folders = @("gallery", "video\hero", "video\performances")
+  $Folders = @("gallery", "video\hero", "video\performances", "music")
   $Watchers = @()
   $SubscriptionIds = @()
   $EventNumber = 0
@@ -221,7 +222,7 @@ function Start-MediaManifestWatcher {
     return
   }
 
-  Write-Host "Watching gallery, video/hero, and video/performances. Press Ctrl+C to stop."
+  Write-Host "Watching gallery, video/hero, video/performances, and music. Press Ctrl+C to stop."
 
   try {
     while ($true) {

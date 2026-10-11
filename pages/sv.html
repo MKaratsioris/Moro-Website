@@ -240,6 +240,7 @@
 
     <nav class="menu-panel" data-menu-panel aria-label="Main menu">
       <a href="#home">Hem</a>
+      <a href="#music">Musik</a>
       <a href="#about">Om</a>
       <a href="#schedule">Schema</a>
       <a href="#gallery">Galleri</a>
@@ -302,6 +303,24 @@
       <!-- --------------------------------------- -->
       <!------------ ABOUT SECTION ------------------>
       <!-- --------------------------------------- -->
+
+      <section class="content-section music-section" id="music" aria-labelledby="music-heading">
+        <div class="music-eyebrow">Musik</div>
+        <h2 id="music-heading">Min favorit<span class="text-accent">musik</span></h2>
+        <div class="music-player" data-music-player data-music-labels='["Musik","Min favorit<span class=\"text-accent\">musik</span>","Spelas nu","Spellista","Dubbelklicka på en låt för att spela","Spela","Pausa","Stoppa","Föregående låt","Nästa låt","Stäng av ljud","Slå på ljud","Volym","Sänk volymen","Höj volymen","Låtens förlopp","Inga låtar ännu","Låten kan inte spelas"]'>
+          <div class="music-deck">
+            <div class="music-record" aria-hidden="true"><span>♪</span></div>
+            <div class="music-eyebrow">Spelas nu</div>
+            <h3 data-music-title aria-live="polite"></h3>
+            <div class="music-transport"><button type="button" data-music-action="previous" aria-label="Föregående låt" title="Föregående låt">❮</button><button type="button" data-music-action="play" aria-label="Spela" title="Spela">▶</button><button type="button" data-music-action="stop" aria-label="Stoppa" title="Stoppa">■</button><button type="button" data-music-action="next" aria-label="Nästa låt" title="Nästa låt">❯</button></div>
+            <div class="music-progress"><input type="range" data-music-progress min="0" max="100" value="0" step="0.1" aria-label="Låtens förlopp" disabled><div class="music-times"><span data-music-elapsed>0:00</span><span data-music-duration>0:00</span></div></div>
+            <div class="music-volume"><button type="button" data-music-action="mute" aria-label="Stäng av ljud" title="Stäng av ljud">♫</button><button type="button" data-music-action="quieter" aria-label="Sänk volymen" title="Sänk volymen">−</button><input type="range" data-music-volume min="0" max="1" step="0.01" value="0.7" aria-label="Volym"><button type="button" data-music-action="louder" aria-label="Höj volymen" title="Höj volymen">+</button></div>
+            <div class="music-error" data-music-error role="status"></div>
+          </div>
+          <div class="music-library"><ol class="music-playlist" data-music-playlist aria-label="Spellista"></ol></div>
+          <audio data-music-audio preload="metadata"></audio>
+        </div>
+      </section>
 
       <section class="content-section" id="about">
         <div class="section-index section-index--right" aria-hidden="true">
@@ -759,5 +778,6 @@
 
     <script src="../media-manifest.js"></script>
     <script src="../script.js"></script>
+    <script src="../music-player.js"></script>
   </body>
 </html>

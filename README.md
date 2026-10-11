@@ -30,3 +30,6 @@ The hero counts each browser once (using local storage), across all language pag
 Production counters use the Netlify function in `netlify/functions/counters.mjs` and the site-wide `audience-counters` Blobs store. Netlify installs the dependency from `package.json` during deployment. Conditional writes protect concurrent increments. Deploy through Netlify to activate shared totals; static hosting alone cannot run this endpoint. These seeded totals are display counters, not historical analytics.
 
 Localhost/file previews use separate local storage counts. Run `node tools/preview.cjs` and open http://127.0.0.1:4173/ to preview. Browser-local visitor recognition resets if storage is cleared or a different browser is used.
+
+## Music playlist
+Add audio files to music/ and run node tools/update-media-manifest.js (or update-media-manifest.cmd). Netlify regenerates the playlist during each build. Supported extensions: MP3, M4A, AAC, OGG, WAV, FLAC, OPUS, WEBM; playback support depends on the browser. Song titles come from filenames. Double-click a playlist song, press Enter/Space on a focused song, or tap on touch devices to play it.

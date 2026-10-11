@@ -240,6 +240,7 @@
 
     <nav class="menu-panel" data-menu-panel aria-label="Main menu">
       <a href="#home">首页</a>
+      <a href="#music">音乐</a>
       <a href="#about">关于</a>
       <a href="#schedule">日程</a>
       <a href="#gallery">图库</a>
@@ -302,6 +303,24 @@
       <!-- --------------------------------------- -->
       <!------------ ABOUT SECTION ------------------>
       <!-- --------------------------------------- -->
+
+      <section class="content-section music-section" id="music" aria-labelledby="music-heading">
+        <div class="music-eyebrow">音乐</div>
+        <h2 id="music-heading">我最喜欢的<span class="text-accent">音乐</span></h2>
+        <div class="music-player" data-music-player data-music-labels='["音乐","我最喜欢的<span class=\"text-accent\">音乐</span>","正在播放","播放列表","双击歌曲即可播放","播放","暂停","停止","上一首","下一首","静音","取消静音","音量","降低音量","提高音量","播放进度","暂无歌曲","无法播放此歌曲"]'>
+          <div class="music-deck">
+            <div class="music-record" aria-hidden="true"><span>♪</span></div>
+            <div class="music-eyebrow">正在播放</div>
+            <h3 data-music-title aria-live="polite"></h3>
+            <div class="music-transport"><button type="button" data-music-action="previous" aria-label="上一首" title="上一首">❮</button><button type="button" data-music-action="play" aria-label="播放" title="播放">▶</button><button type="button" data-music-action="stop" aria-label="停止" title="停止">■</button><button type="button" data-music-action="next" aria-label="下一首" title="下一首">❯</button></div>
+            <div class="music-progress"><input type="range" data-music-progress min="0" max="100" value="0" step="0.1" aria-label="播放进度" disabled><div class="music-times"><span data-music-elapsed>0:00</span><span data-music-duration>0:00</span></div></div>
+            <div class="music-volume"><button type="button" data-music-action="mute" aria-label="静音" title="静音">♫</button><button type="button" data-music-action="quieter" aria-label="降低音量" title="降低音量">−</button><input type="range" data-music-volume min="0" max="1" step="0.01" value="0.7" aria-label="音量"><button type="button" data-music-action="louder" aria-label="提高音量" title="提高音量">+</button></div>
+            <div class="music-error" data-music-error role="status"></div>
+          </div>
+          <div class="music-library"><ol class="music-playlist" data-music-playlist aria-label="播放列表"></ol></div>
+          <audio data-music-audio preload="metadata"></audio>
+        </div>
+      </section>
 
       <section class="content-section" id="about">
         <div class="section-index section-index--right" aria-hidden="true">
@@ -725,5 +744,6 @@
 
     <script src="../media-manifest.js"></script>
     <script src="../script.js"></script>
+    <script src="../music-player.js"></script>
   </body>
 </html>

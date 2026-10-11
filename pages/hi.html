@@ -240,6 +240,7 @@
 
     <nav class="menu-panel" data-menu-panel aria-label="Main menu">
       <a href="#home">होम</a>
+      <a href="#music">संगीत</a>
       <a href="#about">परिचय</a>
       <a href="#schedule">कार्यक्रम</a>
       <a href="#gallery">गैलरी</a>
@@ -302,6 +303,24 @@
       <!-- --------------------------------------- -->
       <!------------ ABOUT SECTION ------------------>
       <!-- --------------------------------------- -->
+
+      <section class="content-section music-section" id="music" aria-labelledby="music-heading">
+        <div class="music-eyebrow">संगीत</div>
+        <h2 id="music-heading">मेरा पसंदीदा <span class="text-accent">संगीत</span></h2>
+        <div class="music-player" data-music-player data-music-labels='["संगीत","मेरा पसंदीदा <span class=\"text-accent\">संगीत</span>","अभी चल रहा है","प्लेलिस्ट","गाना चलाने के लिए दो बार क्लिक करें","चलाएँ","रोकें","बंद करें","पिछला गाना","अगला गाना","आवाज़ बंद करें","आवाज़ चालू करें","आवाज़","आवाज़ घटाएँ","आवाज़ बढ़ाएँ","गाने की प्रगति","अभी कोई गाना नहीं है","यह गाना नहीं चल सका"]'>
+          <div class="music-deck">
+            <div class="music-record" aria-hidden="true"><span>♪</span></div>
+            <div class="music-eyebrow">अभी चल रहा है</div>
+            <h3 data-music-title aria-live="polite"></h3>
+            <div class="music-transport"><button type="button" data-music-action="previous" aria-label="पिछला गाना" title="पिछला गाना">❮</button><button type="button" data-music-action="play" aria-label="चलाएँ" title="चलाएँ">▶</button><button type="button" data-music-action="stop" aria-label="बंद करें" title="बंद करें">■</button><button type="button" data-music-action="next" aria-label="अगला गाना" title="अगला गाना">❯</button></div>
+            <div class="music-progress"><input type="range" data-music-progress min="0" max="100" value="0" step="0.1" aria-label="गाने की प्रगति" disabled><div class="music-times"><span data-music-elapsed>0:00</span><span data-music-duration>0:00</span></div></div>
+            <div class="music-volume"><button type="button" data-music-action="mute" aria-label="आवाज़ बंद करें" title="आवाज़ बंद करें">♫</button><button type="button" data-music-action="quieter" aria-label="आवाज़ घटाएँ" title="आवाज़ घटाएँ">−</button><input type="range" data-music-volume min="0" max="1" step="0.01" value="0.7" aria-label="आवाज़"><button type="button" data-music-action="louder" aria-label="आवाज़ बढ़ाएँ" title="आवाज़ बढ़ाएँ">+</button></div>
+            <div class="music-error" data-music-error role="status"></div>
+          </div>
+          <div class="music-library"><ol class="music-playlist" data-music-playlist aria-label="प्लेलिस्ट"></ol></div>
+          <audio data-music-audio preload="metadata"></audio>
+        </div>
+      </section>
 
       <section class="content-section" id="about">
         <div class="section-index section-index--right" aria-hidden="true">
@@ -725,5 +744,6 @@
 
     <script src="../media-manifest.js"></script>
     <script src="../script.js"></script>
+    <script src="../music-player.js"></script>
   </body>
 </html>

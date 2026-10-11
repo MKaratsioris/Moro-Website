@@ -240,6 +240,7 @@
 
     <nav class="menu-panel" data-menu-panel aria-label="Main menu">
       <a href="#home">Home</a>
+      <a href="#music">Music</a>
       <a href="#about">About</a>
       <a href="#schedule">Schedule</a>
       <a href="#gallery">Gallery</a>
@@ -302,6 +303,24 @@
       <!-- --------------------------------------- -->
       <!------------ ABOUT SECTION ------------------>
       <!-- --------------------------------------- -->
+
+      <section class="content-section music-section" id="music" aria-labelledby="music-heading">
+        <div class="music-eyebrow">Music</div>
+        <h2 id="music-heading">My favourite <span class="text-accent">Music</span></h2>
+        <div class="music-player" data-music-player data-music-labels='["Music","My favourite <span class=\"text-accent\">Music</span>","Now playing","Playlist","Double-click a song to play","Play","Pause","Stop","Previous song","Next song","Mute","Unmute","Volume","Volume down","Volume up","Song progress","No songs yet","Unable to play this song"]'>
+          <div class="music-deck">
+            <div class="music-record" aria-hidden="true"><span>♪</span></div>
+            <div class="music-eyebrow">Now playing</div>
+            <h3 data-music-title aria-live="polite"></h3>
+            <div class="music-transport"><button type="button" data-music-action="previous" aria-label="Previous song" title="Previous song">❮</button><button type="button" data-music-action="play" aria-label="Play" title="Play">▶</button><button type="button" data-music-action="stop" aria-label="Stop" title="Stop">■</button><button type="button" data-music-action="next" aria-label="Next song" title="Next song">❯</button></div>
+            <div class="music-progress"><input type="range" data-music-progress min="0" max="100" value="0" step="0.1" aria-label="Song progress" disabled><div class="music-times"><span data-music-elapsed>0:00</span><span data-music-duration>0:00</span></div></div>
+            <div class="music-volume"><button type="button" data-music-action="mute" aria-label="Mute" title="Mute">♫</button><button type="button" data-music-action="quieter" aria-label="Volume down" title="Volume down">−</button><input type="range" data-music-volume min="0" max="1" step="0.01" value="0.7" aria-label="Volume"><button type="button" data-music-action="louder" aria-label="Volume up" title="Volume up">+</button></div>
+            <div class="music-error" data-music-error role="status"></div>
+          </div>
+          <div class="music-library"><ol class="music-playlist" data-music-playlist aria-label="Playlist"></ol></div>
+          <audio data-music-audio preload="metadata"></audio>
+        </div>
+      </section>
 
       <section class="content-section" id="about">
         <div class="section-index section-index--right" aria-hidden="true">
@@ -806,5 +825,6 @@
 
     <script src="../media-manifest.js"></script>
     <script src="../script.js"></script>
+    <script src="../music-player.js"></script>
   </body>
 </html>

@@ -240,6 +240,7 @@
 
     <nav class="menu-panel" data-menu-panel aria-label="Main menu">
       <a href="#home">الرئيسية</a>
+      <a href="#music">الموسيقى</a>
       <a href="#about">عنها</a>
       <a href="#schedule">الجدول</a>
       <a href="#gallery">المعرض</a>
@@ -302,6 +303,24 @@
       <!-- --------------------------------------- -->
       <!------------ ABOUT SECTION ------------------>
       <!-- --------------------------------------- -->
+
+      <section class="content-section music-section" id="music" aria-labelledby="music-heading" dir="rtl">
+        <div class="music-eyebrow">الموسيقى</div>
+        <h2 id="music-heading"><span class="text-accent">الموسيقى</span> المفضلة لدي</h2>
+        <div class="music-player" data-music-player data-music-labels='["الموسيقى","<span class=\"text-accent\">الموسيقى</span> المفضلة لدي","يُشغّل الآن","قائمة التشغيل","انقر مرتين على أغنية لتشغيلها","تشغيل","إيقاف مؤقت","إيقاف","الأغنية السابقة","الأغنية التالية","كتم الصوت","إلغاء كتم الصوت","مستوى الصوت","خفض الصوت","رفع الصوت","تقدم الأغنية","لا توجد أغانٍ بعد","تعذر تشغيل هذه الأغنية"]'>
+          <div class="music-deck">
+            <div class="music-record" aria-hidden="true"><span>♪</span></div>
+            <div class="music-eyebrow">يُشغّل الآن</div>
+            <h3 data-music-title aria-live="polite"></h3>
+            <div class="music-transport"><button type="button" data-music-action="previous" aria-label="الأغنية السابقة" title="الأغنية السابقة">❮</button><button type="button" data-music-action="play" aria-label="تشغيل" title="تشغيل">▶</button><button type="button" data-music-action="stop" aria-label="إيقاف" title="إيقاف">■</button><button type="button" data-music-action="next" aria-label="الأغنية التالية" title="الأغنية التالية">❯</button></div>
+            <div class="music-progress"><input type="range" data-music-progress min="0" max="100" value="0" step="0.1" aria-label="تقدم الأغنية" disabled><div class="music-times"><span data-music-elapsed>0:00</span><span data-music-duration>0:00</span></div></div>
+            <div class="music-volume"><button type="button" data-music-action="mute" aria-label="كتم الصوت" title="كتم الصوت">♫</button><button type="button" data-music-action="quieter" aria-label="خفض الصوت" title="خفض الصوت">−</button><input type="range" data-music-volume min="0" max="1" step="0.01" value="0.7" aria-label="مستوى الصوت"><button type="button" data-music-action="louder" aria-label="رفع الصوت" title="رفع الصوت">+</button></div>
+            <div class="music-error" data-music-error role="status"></div>
+          </div>
+          <div class="music-library"><ol class="music-playlist" data-music-playlist aria-label="قائمة التشغيل"></ol></div>
+          <audio data-music-audio preload="metadata"></audio>
+        </div>
+      </section>
 
       <section class="content-section" id="about">
         <div class="section-index section-index--right" aria-hidden="true">
@@ -725,5 +744,6 @@
 
     <script src="../media-manifest.js"></script>
     <script src="../script.js"></script>
+    <script src="../music-player.js"></script>
   </body>
 </html>

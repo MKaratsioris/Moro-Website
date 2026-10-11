@@ -304,5 +304,11 @@ window.MORAKI_MEDIA = {
       "type": "video/mp4",
       "poster": "assets/performance-posters/Sebastián Achaval - Mi dolor.png"
     }
+  ],
+  "music": [
+    {
+      "src": "music/Tormenta - O.T. Carlos Di Sarli con Mario Pomar.MP3",
+      "title": "Tormenta - O.T. Carlos Di Sarli con Mario Pomar"
+    }
   ]
 };

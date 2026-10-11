@@ -3390,3 +3390,11 @@ body.hero-audio-hidden .hero-viewers, body.menu-open .hero-viewers { opacity: 0;
   .photo-thumbnails { height: 90px; flex-direction: row; }
   .photo-thumbnails button { flex: 0 0 100px; }
 }
+
+.music-playlist button .music-track-leading { position: relative; flex: 0 0 28px; width: 28px; height: 28px; display: grid; place-items: center; }
+.music-playlist button .music-track-number { font: .75rem Arial, sans-serif; color: var(--muted); }
+.music-playlist button .music-track-play { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%; background: var(--accent); color: #fff; opacity: 0; visibility: hidden; transition: opacity .15s; }
+.music-track-play svg { width: 17px; height: 17px; }
+.music-playlist li:hover .music-track-number, .music-playlist li:focus-within .music-track-number { visibility: hidden; }
+.music-playlist li:hover .music-track-play, .music-playlist li:focus-within .music-track-play { opacity: 1; visibility: visible; }
+@media (hover: none) { .music-playlist button .music-track-number { visibility: hidden; } .music-playlist button .music-track-play { opacity: 1; visibility: visible; } }

@@ -76,7 +76,12 @@
   tracks.forEach((track, i) => {
     const row = document.createElement('li'), button = document.createElement('button');
     button.type = 'button';
-    const number = document.createElement('span'); number.textContent = String(i + 1).padStart(2, '0');
+    const number = document.createElement('span'); number.className = 'music-track-leading';
+    const indexLabel = document.createElement('span'); indexLabel.className = 'music-track-number'; indexLabel.textContent = String(i + 1).padStart(2, '0');
+    const quickPlay = document.createElement('span'); quickPlay.className = 'music-track-play'; quickPlay.title = labels[5]; quickPlay.setAttribute('aria-hidden', 'true'); quickPlay.innerHTML = icon('<path d="m9 6 9 6-9 6z" fill="currentColor" stroke="none"/>');
+    number.append(indexLabel, quickPlay);
+    quickPlay.addEventListener('click', event => { event.stopPropagation(); if (event.detail <= 1) select(i, true); });
+    quickPlay.addEventListener('dblclick', event => event.stopPropagation());
     const name = document.createElement('span'); name.textContent = track.title;
     name.className = 'music-track-name';
     const duration = document.createElement('time'); duration.className = 'music-track-duration'; duration.textContent = track.duration ? time(track.duration) : '—:—';
@@ -85,7 +90,7 @@
     button.addEventListener('dblclick', () => select(i, true));
     button.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(i, true); } });
     // Touch users can start a song with a single tap.
-    button.addEventListener('pointerup', event => { if (event.pointerType === 'touch' || event.pointerType === 'pen') select(i, true); });
+    button.addEventListener('pointerup', event => { if ((event.pointerType === 'touch' || event.pointerType === 'pen') && !event.target.closest('.music-track-play')) select(i, true); });
   });
 
   };
